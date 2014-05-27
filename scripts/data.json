@@ -1,0 +1,297 @@
+{
+    "ticketTypes": [
+        {
+            "id": 1,
+            "name": "Adult"
+        },
+        {
+            "id": 2,
+            "name": "Child"
+        },
+        {
+            "id": 3,
+            "name": "Senior"
+        },
+        {
+            "id": 4,
+            "name": "Student"
+        }
+    ],
+    "pricings": [
+        {
+            "id": 1,
+            "name": "Standard",
+            "tickets": [
+                {
+                    "id": 1, "price": 10.00
+                },
+                {
+                    "id": 2, "price": 7.00
+                },
+                {
+                    "id": 3, "price": 6.00
+                },
+                {
+                    "id": 4, "price": 8.00
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "name": "3D",
+            "tickets": [
+                {
+                    "id": 1, "price": 12.00
+                },
+                {
+                    "id": 2, "price": 9.00
+                },
+                {
+                    "id": 3, "price": 8.00
+                },
+                {
+                    "id": 4, "price": 10.00
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "IMAX",
+            "tickets": [
+                {
+                    "id": 1, "price": 15.00
+                },
+                {
+                    "id": 2, "price": 12.00
+                },
+                {
+                    "id": 3, "price": 11.00
+                },
+                {
+                    "id": 4, "price": 13.00
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "name": "IMAX 3D",
+            "tickets": [
+                {
+                    "id": 1, "price": 17.00
+                },
+                {
+                    "id": 2, "price": 14.00
+                },
+                {
+                    "id": 3, "price": 13.00
+                },
+                {
+                    "id": 4, "price": 15.00
+                }
+            ]
+        }
+    ],
+    "theaters": [
+        {
+            "id": 1,
+            "name": "Theater 1",
+            "pricing": "Standard"
+        },
+        {
+            "id": 2,
+            "name": "Theater 2",
+            "pricing": "3D"
+        },
+        {
+            "id": 3,
+            "name": "Theater 3",
+            "pricing": "IMAX"
+        },
+        {
+            "id": 4,
+            "name": "Theater 4",
+            "pricing": "IMAX 3D"
+        }
+    ],
+    "movies": [
+        {
+            "id": 1,
+            "title": "Captain America : The Winter Soldier",
+            "rating": "PG-13",
+            "runtime": "90 min",
+            "posterUrl": "images/captainAmerica.jpg",
+            "synopsis": "Captain America is Americaing around with Robert Redford when suddenly, Rob is all like \"Spying ain't too bad, right Cappy cap?\"<br />Of course, the Captain is like, \"Naw, man. That ish is bunk.\", so he tries to bounce with ScarJo. Turns out, though, his buddy from WWII is still around, and some kind of evil robot, so The Captain has to introduce some America in to that jank before it's too late.",
+            "cast": [
+                "Chris Evans",
+                "Scarlett Johannsen",
+                "Samuel L. Jackson",
+                "Robert Redford",
+                "Jet Powered Heli-Carrier"
+            ],
+            "directors": [
+                "Joe Russo",
+                "Anthony Russo"
+            ]
+        },
+        {
+            "id": 2,
+            "title": "The Lego Movie",
+            "rating": "PG",
+            "runtime": "100 min",
+            "posterUrl": "images/legoMovie.jpg",
+            "synopsis": "An ordinary Lego construction worker, thought to be the prophesied \"Special\", is recruited to join a quest to stop an evil tyrant from gluing the Lego universe into eternal stasis.",
+            "cast": [
+                "Chris Pratt",
+                "Will Ferrell",
+                "Elizabeth Banks",
+                "Will Arnett",
+                "Morgan Freeman",
+                "Liam Neeson"
+            ],
+            "directors": [
+                "Phil Lord",
+                "Christopher Miller"
+            ]
+        },
+        {
+            "id": 3,
+            "title": "Godzilla",
+            "rating": "PG-13",
+            "runtime": "100 min",
+            "posterUrl": "images/godzilla.jpg",
+            "synopsis": "Godzilla fights malevolent creatures that threaten humanity.",
+            "cast": [
+                "Aaron Taylor-Johnson",
+                "Ken Watanabe",
+                "Elizabeth Olsen",
+                "Juliette Binoche",
+                "Sally Hawkins",
+                "David Strathairn",
+                "Bryan Cranston"
+            ],
+            "directors": [
+                "Gareth Edwards"
+            ]
+        },
+        {
+            "id": 4,
+            "title": "Neighbors",
+            "rating": "R",
+            "runtime": "97 min",
+            "posterUrl": "images/neighbors.jpg",
+            "synopsis": "New parents Mac (Seth Rogen) and Kelly (Rose Byrne) move to the suburbs when they welcome an infant daughter into their lives. All goes well with the couple, until the Delta Psi Beta fraternity moves in next door. Mac and Kelly don't want to seem uncool, and they try their best to get along with frat president Teddy (Zac Efron) and the rest of the guys. However, when the couple finally call the cops during a particularly raucous frat party, a full-scale war erupts.",
+            "cast": [
+                "Seth Rogen",
+                "Zac Efron",
+                "Rose Byrne",
+                "Christopher Mintz-Plasse",
+                "Dave Franco",
+                "Lisa Kudrow",
+                "Ike Barinholtzo"
+            ],
+            "directors": [
+                "Nicholas Stoller"
+            ]
+        },
+        {
+            "id": 5,
+            "title": "Million Dollar Arm",
+            "rating": "PG",
+            "runtime": "125 min",
+            "posterUrl": "images/millionDollarArm.jpg",
+            "synopsis": "In a last-ditch effort to save his failing career, sports agent J.B. Bernstein (Jon Hamm) plans to find baseball's next star pitcher. He heads to India to find a cricket player whom he can nurture into becoming a major league star. With the help of a scout (Alan Arkin), J.B. finds teens Dinesh (Madhur Mittal) and Rinku (Suraj Sharma), who haven't a clue about baseball but throw powerful pitches. As the boys adjust to American life, J.B. learns valuable lessons about teamwork and family.",
+            "cast": [
+                "Jon Hamm",
+                "Aasif Mandvi",
+                "Bill Paxton",
+                "Suraj Sharma",
+                "Lake Bell",
+                "Madhur Mittal",
+                "Pitobash",
+                "Alan Arkin"
+            ],
+            "directors": [
+                "Craig Gillespie"
+            ]
+        }
+    ],
+    "showings": [
+        {
+            "id": 1,
+            "movieTitle": "Captain America : The Winter Soldier",
+            "date": "Jan 1",
+            "time": "9:30am",
+            "theater": 1
+        },
+        {
+            "id": 2,
+            "movieTitle": "Captain America : The Winter Soldier",
+            "date": "Jan 1",
+            "time": "12:30pm",
+            "theater": 1
+        },
+        {
+            "id": 3,
+            "movieTitle": "Captain America : The Winter Soldier",
+            "date": "Jan 1",
+            "time": "5:30pm",
+            "theater": 1
+        },
+        {
+            "id": 4,
+            "movieTitle": "Captain America : The Winter Soldier",
+            "date": "Jan 1",
+            "time": "8:30pm",
+            "theater": 1
+        },
+        {
+            "id": 5,
+            "movieTitle": "Captain America : The Winter Soldier",
+            "date": "Jan 1",
+            "time": "3:00pm",
+            "theater": 2
+        },
+        {
+            "id": 6,
+            "movieTitle": "Captain America : The Winter Soldier",
+            "date": "Jan 1",
+            "time": "7:00pm",
+            "theater": 2
+        },
+        {
+            "id": 7,
+            "movieTitle": "Captain America : The Winter Soldier",
+            "date": "Jan 1",
+            "time": "9:00pm",
+            "theater": 2
+        },
+        {
+            "id": 8,
+            "movieTitle": "Captain America : The Winter Soldier",
+            "date": "Jan 1",
+            "time": "7:30pm",
+            "theater": 4
+        },
+        {
+            "id": 9,
+            "movieTitle": "Captain America : The Winter Soldier",
+            "date": "Jan 1",
+            "time": "9:30pm",
+            "theater": 4
+        },
+        {
+            "id": 10,
+            "movieTitle": "The Lego Movie",
+            "date": "Jan 1",
+            "time": "12:45pm",
+            "theater": 1
+        },
+        {
+            "id": 11,
+            "movieTitle": "The Lego Movie",
+            "date": "Jan 1",
+            "time": "3:45pm",
+            "theater": 2
+        }
+    ]
+}

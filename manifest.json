@@ -1,0 +1,20 @@
+{
+    "manifest_version": 2,
+    "name": "QuickTicket Chrome",
+    "version": "0.0.0.4",
+    
+    "description": "The QuickTicket movie theater kiosk app for Chrome",
+    "icons": { 
+        "16": "images/quickTickets_16.png", 
+        "128": "images/quickTickets_128.png" 
+    },
+    
+    "kiosk_enabled": true,
+    "author": "Fusion Labs",
+    "app": {
+        "background": {
+            "scripts": ["background.js"]
+        }
+    },
+    "offline_enabled": true      
+}

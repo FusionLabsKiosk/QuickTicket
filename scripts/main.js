@@ -3,12 +3,15 @@ var SlidePosition = {
     LEFT : "left", 
     RIGHT : "right"
 };
+var TrackType = {ONE:"one", TWO:"two", ONEANDTWO:"oneandtwo"};
 var TICKET_SLIDE = 200;
 var PURCHASE_SLIDE = 200;
 var SLIDE = 350;
 var SLIDE_ANIMATION = 750;
 
 var CurrentSession;
+
+var CurrentCreditCard;
 
 $(document).ready(Init);
 
@@ -137,7 +140,7 @@ function UpdateTickets() {
 
        totalPrice += ticketTotal;
     });
-    $('#page-showing .tickets-grand-total').html(FormatCurrency(totalPrice));
+    $('#page-showing .tickets-grand-total').html(FormatCurrency(totalPrice, true));
 }
 function CreateTicketDiv(ticket) {
     var quantity = typeof ticket.Quantity === 'undefined' ? 1 : ticket.Quantity;
@@ -150,16 +153,75 @@ function CreateTicketDiv(ticket) {
                 .append($('<span/>').addClass('ticket-quantity').html(quantity));
 }
 function CreateTicketTotalDiv(priceHtml) {
+    var totalTitle = '';
+    if(priceHtml.indexOf('$') > -1)
+    {
+        totalTitle = '<strong>Total</strong>'
+    }
     return $('<div/>').addClass('ticket')
                 .append($('<span/>').addClass('ticket-movie-title').css('visibility', 'hidden').html(CurrentSession.Showing.Movie.Title))
                 .append($('<span/>').addClass('ticket-time').html(''))
-                .append($('<span/>').addClass('ticket-type').html(''))
+                .append($('<span/>').addClass('ticket-type').html(totalTitle))
                 .append($('<span/>').addClass('ticket-price').html(priceHtml))
                 .append($('<span/>').addClass('ticket-multiplier').html(''))
                 .append($('<span/>').addClass('ticket-quantity').html(''));
 }
+function CreatePrintTickets(ticket) {
+    var quantity = typeof ticket.Quantity === 'undefined' ? 1 : ticket.Quantity;
+    var todaysDate = new Date();
+    
+    var ticketHTML = ['<div class="ticket">',
+                            '<div class="main">',
+                                '<header><img src="images/ioCinemaIcon.png" /><span class="header-title">I/0 Cinema 10</span></header>',
+                                '<div class="ticket-content">',
+                                    '<div class="theater"><span class="title">Theater:</span><span class="theater-name">' + CurrentSession.Showing.Theater.Name + '</span></div>',
+                                    '<div class="movie"><span class="ticket-movie-title title">' + CurrentSession.Showing.Movie.Title + '</span></div>',
+                                    '<div class="rating"><span class="title">Rating:</span><span class="ticket-rating">' + CurrentSession.Showing.Movie.Rating + '</span></div>',
+                                    '<div class="time"><span class="title">Showing:</span><span class="ticket-time">' + CurrentSession.Showing.Time + '</span></div>',
+                                    '<div class="date"><span class="admission-date title">' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
+                                    '<div class="admission-data">',
+                                        '<div class="admission-data-item admission"><span class="title">Admit:</span>1 <span class="ticket-type">' + ticket.TicketType.Name + '</span></div>',
+                                        '<div class="admission-data-item price"><span class="title">Price:</span><span class="ticket-price">' + FormatCurrency(ticket.Price) + '</span></div>',
+                                    '</div>',
+                                    '<div class="cinema-data">',
+                                        '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + ticket.ID + '</span></div>',
+                                        '<div class="cinema-data-item issue"><span class="title">Issued:</span><span class="ticket-issue-data">' + todaysDate.getHours() + ':' + todaysDate.getMinutes() + ":" + todaysDate.getSeconds() + ' ' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
+                                        '<div class="cinema-data-item issuer"><span class="title">By:</span><span class="ticket-issuer">Kiosk</span></div>',
+                                    '</div>',
+                                '</div>',
+                            '</div>',
+                            '<div class="stub">',
+                                '<header></header>',
+                                '<div class="ticket-content">',
+                                    '<div class="theater"><span class="title">Theater:</span><span class="theater-name">' + CurrentSession.Showing.Theater.Name + '</span></div>',
+                                    '<div class="date"><span class="admission-date title">' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
+                                    '<div class="time"><span class="title">Showing:</span><span class="ticket-time">' + CurrentSession.Showing.Time + '</span></div>',
+                                    '<div class="movie"><span class="ticket-movie-title title">' + CurrentSession.Showing.Movie.Title + '</span></div>',
+                                    '<div class="admission">1 <span class="ticket-type">' + ticket.TicketType.Name + '</span></div>',
+                                    '<div class="cinema-data">',
+                                        '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + ticket.ID + '</span></div>',
+                                        '<div class="cinema-data-item issue"><span class="title">Issued:</span><span class="ticket-issue-data">' + todaysDate.getHours() + ':' + todaysDate.getMinutes() + ":" + todaysDate.getSeconds() + ' ' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
+                                        '<div class="cinema-data-item issuer"><span class="title">By:</span><span class="ticket-issuer">Kiosk</span></div>',
+                                    '</div>',
+                                '</div>',
+                            '</div>',
+                      '</div>'];
+    var ticketHTMLString = ticketHTML.join('');
+    
+    $('#page-print-tickets .tickets-container').append(ticketHTMLString);
+    
+    
+//    
+//    return $('<div/>').addClass('ticket')
+//                .append($('<span/>').addClass('ticket-movie-title').html(CurrentSession.Showing.Movie.Title))
+//                .append($('<span/>').addClass('ticket-time').html(CurrentSession.Showing.Time))
+//                .append($('<span/>').addClass('ticket-type').html(ticket.TicketType.Name))
+//                .append($('<span/>').addClass('ticket-price').html(FormatCurrency(ticket.Price)))
+//                .append($('<span/>').addClass('ticket-multiplier').html('x'))
+//                .append($('<span/>').addClass('ticket-quantity').html(quantity));
+}
 function ShowPurchaseOption(option) {
-    $.each($('#page-purchase .purchase-options .purchase-option'), function() {
+    $.each($('#page-purchase .purchase-option-forms .purchase-option-form'), function() {
         if ($(this).hasClass(option)) {
             if (!$(this).is(':visible')) {
                 $(this).show(PURCHASE_SLIDE);
@@ -170,6 +232,22 @@ function ShowPurchaseOption(option) {
         }
     });
 }
+
+function VerifyPayment(paymentType)
+{
+    //Payment verification logic
+    CurrentSession.Receipt.PaymentType = paymentType;
+    if(paymentType == 'Credit')
+    {
+        CurrentSession.Receipt.PaymentTypeInfo = 'Card Charged: xxxx-xxxx-xxxx-' + $('#page-purchase .card-number').val().substring(12);
+    }
+    else if(paymentType == 'Gift')
+    {
+        CurrentSession.Receipt.PaymentTypeInfo = 'Gift Card Used: xxxx-xxxx-5711-GIFT';
+    }
+    NavigateTo('#page-purchase-results', SlidePosition.RIGHT, Prerequisite_Purchase_Results);
+}
+
 function PrintHTML(html) {
     //TODO: This will likely change, need a chromebook in Kiosk mode to test
     /*var w = chrome.app.window.create('blank.html').contentWindow;
@@ -239,6 +317,7 @@ function Prerequisite_Purchase() {
     //timeout to allow for page transitions
     setTimeout(function()
     {
+        $('*').blur();
         var receipt = new Receipt(CurrentSession.Showing);
         CurrentSession.Receipt = receipt;
 
@@ -291,10 +370,12 @@ function Prerequisite_Purchase_Results() {
 function Prerequisite_Print_Tickets() {    
     //timeout to allow for page transitions
     setTimeout(function() {
-        $('#page-print-tickets .ticket-summary').empty();
+        $('#page-print-tickets .tickets-container').empty();
         var receipt = CurrentSession.Receipt;
-        for (var i = 0; i < receipt.Tickets.length; i++) {
-            CreateTicketDiv(receipt.Tickets[i]).appendTo($('#page-print-tickets .ticket-summary'));
+        for (var i = 0; i < receipt.Tickets.length; i++)
+        {
+            CreatePrintTickets(receipt.Tickets[i]);
+            //.appendTo($('#page-print-tickets .tickets-container'));
         }
         
         setTimeout(function(){$('#page-print-tickets').trigger('prerequisiteComplete');}, SLIDE_ANIMATION);
@@ -331,13 +412,88 @@ function ValidateConfirmationCodeFormat(validationString)
     }
     return false;
 }
-function FormatCurrency(value)
+function FormatCurrency(value, hideSign)
 {
+    if(hideSign == true)
+    {
+        return parseFloat(value, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
+    }
+    
     return '$' + parseFloat(value, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString();
 }
 function FormatDecimalFromCurrency(value)
 {
     return parseFloat(value.substr(1));
+}
+
+function GetCardData(cardData)
+{
+    this.CurrentCreditCard = new CreditCard();
+    
+    var trackType = 0;
+    var containsEquals = false;
+    var containsCarot = false;
+    
+    if(cardData.indexOf('^') > -1)
+    {
+        containsCarot = true;
+    }
+    if(cardData.indexOf('=') > -1)
+    {
+        containsEquals = true;
+    }
+    
+    if(containsCarot == true && containsEquals == true)
+    {
+        trackType = TrackType.ONEANDTWO;
+    }
+    else if(containsCarot == true)
+    {
+        trackType = TrackType.ONE;
+    }
+    else if(containsEquals == true)
+    {
+        TrackType = TrackType.TWO;
+    }
+    else
+    {
+        //error
+        console.error('card read error');
+        console.log('Card Data: ' + cardData);
+        this.CurrentCreditCard = undefined;
+        $('#page-purchase .card-input').val('');
+        $('#page-purchase .card-number').trigger('change');
+        return;
+    }
+    
+    var cardNumber;
+    
+    if(trackType == TrackType.ONE)
+    {
+        
+    }
+    
+    if(trackType == TrackType.TWO)
+    {
+        
+    }
+    
+    if(trackType == TrackType.ONEANDTWO)
+    {
+        //strip percentage
+        if(cardData.substring(0,1) == '%')
+        {
+            cardData = cardData.substring(1, cardData.length);
+        }
+        
+        var cardDataArray = cardData.split('^');
+        CurrentCreditCard.CardNumber = cardDataArray[0].substring(1, cardDataArray[0].length)
+        
+    }
+    
+    $('#page-purchase .card-number').val(CurrentCreditCard.CardNumber);
+    $('#page-purchase .card-number').trigger('change');
+    $('#page-purchase .card-input').val('');
 }
 
 
@@ -351,13 +507,13 @@ function AddListeners()
     $('#page-movie').on('afterclose', Movie_AfterCloseHandler);
     $('#page-showing .purchase-tickets').click(Showing_PurchaseTickets_ClickHandler);
     $('#page-showing .add-tickets').click(Showing_AddTickets_ClickHandler);
-    $('#page-purchase .purchase-option-cash').click(Purchase_Cash_ClickHandler);
-    $('#page-purchase .purchase-option-card').click(Purchase_Card_ClickHandler);
-    $('#page-purchase .purchase-option-gift').click(Purchase_Gift_ClickHandler);
-    $('#page-purchase .cash-continue').click(Purchase_CashPurchase_ClickHandler);
-    $('#page-purchase .card-continue').click(Purchase_CardPurchase_ClickHandler);
-    $('#page-purchase .gift-continue').click(Purchase_GiftPurchase_ClickHandler);
-    $('#page-purchase .credit-card-number').keyup(Purchase_CreditCardNumber_KeyUpHandler);
+    $('#page-purchase').on('closeComplete', Purchase_CloseCompleteHandler);
+    $('#page-purchase').on('afterclose', Purchase_AfterCloseHandler);
+    $('#page-purchase *').unbind('click').click(Purchase_ClickHandler);
+    $('#page-purchase .payment-method-option.cash').click(Purchase_Cash_ClickHandler);
+    $('#page-purchase .payment-method-option.card').click(Purchase_Card_ClickHandler);
+    $('#page-purchase .payment-method-option.gift').click(Purchase_Gift_ClickHandler);
+    $('#page-purchase .card-number').change(Purchase_CardNumber_ChangeHandler);
     $('#page-purchase-results .print-tickets').click(PurchaseResults_PrintTickets_ClickHandler);
     $('#page-ticket-search .enter-confirmation-code').click(TicketSearch_EnterConfirmationCode_ClickHandler);
     $('#page-ticket-search .enter-credit-card').click(TicketSearch_EnterCreditCard_ClickHandler);
@@ -438,6 +594,29 @@ function Purchase_Gift_ClickHandler(e)
 {
     ShowPurchaseOption('gift');
 }
+function Purchase_CloseCompleteHandler(e)
+{
+    $('#page-purchase .card-input').focus();
+    $('#page-purchase .card-input').keyup(Purchase_CardInput_OnKeyUpHandler);
+}
+function Purchase_AfterCloseHandler(e)
+{
+    $('#page-purchase .card-input').unbind('keyup');
+    $('#page-purchase .card-input').val('');
+    $('#page-purchase .card-number').val('');
+}
+function Purchase_ClickHandler(e)
+{
+    $('#page-purchase .card-input').focus();
+}
+function Purchase_CardInput_OnKeyUpHandler(e)
+{
+    console.log();
+    if(e.keyCode == 13)
+    {
+        GetCardData($('#page-purchase .card-input').val());
+    }
+}
 function Purchase_CashPurchase_ClickHandler(e)
 {
     //Payment verification logic
@@ -445,24 +624,16 @@ function Purchase_CashPurchase_ClickHandler(e)
     CurrentSession.Receipt.PaymentTypeInfo = 'Change Due: $0.00';
     NavigateTo('#page-purchase-results', SlidePosition.RIGHT, Prerequisite_Purchase_Results);
 }
-function Purchase_CardPurchase_ClickHandler(e)
+function Purchase_CardNumber_ChangeHandler(e)
 {
-    //Payment verification logic
-    CurrentSession.Receipt.PaymentType = 'Credit';
-    CurrentSession.Receipt.PaymentTypeInfo = 'Card Charged: xxxx-xxxx-xxxx-' + $('#page-purchase .credit-card-number').val().substring(12);
-    NavigateTo('#page-purchase-results', SlidePosition.RIGHT, Prerequisite_Purchase_Results);
-}
-function Purchase_GiftPurchase_ClickHandler(e)
-{
-    //Payment verification logic
-    CurrentSession.Receipt.PaymentType = 'Gift';
-    CurrentSession.Receipt.PaymentTypeInfo = 'Gift Card Used: xxxx-xxxx-5711-GIFT';
-    NavigateTo('#page-purchase-results', SlidePosition.RIGHT, Prerequisite_Purchase_Results);
-}
-function Purchase_CreditCardNumber_KeyUpHandler(e)
-{
-    var button = $('#page-purchase .card-continue');
-    SetButtonStatus(button, ValidateCardNumberFormat, $(e.target).val());
+    if(ValidateCardNumberFormat($(e.target).val()) == true)
+    {
+        VerifyPayment('Credit');
+    }
+    else if(ValidateConfirmationCodeFormat($(e.target).val()) == true)
+    {
+        VerifyPayment('Gift');
+    }
 }
 function PurchaseResults_PrintTickets_ClickHandler(e)
 {
@@ -584,6 +755,7 @@ function OpenPage(pageName, slidePosition)
         setTimeout(function()
         {
             ClosePage('#' + $('.page', currentSlide).attr('id'));
+            targetPage.trigger('closeComplete');
         }, 350);
 
         //stop 'pop in/out'
@@ -592,7 +764,7 @@ function OpenPage(pageName, slidePosition)
             newSlide.addClass('slide-center');
             newSlide.removeClass(newSlideClass);
         }, 10);
-
+        
         targetPage.trigger('afteropen');
     }
 }

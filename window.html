@@ -19,6 +19,7 @@
       <script src="scripts/objects/Theater.js"></script>
       <script src="scripts/objects/Ticket.js"></script>
       <script src="scripts/objects/TicketType.js"></script>
+      <script src="scripts/objects/CreditCard.js"></script>
   </head>
   <body>
       <header class="float-group">
@@ -72,13 +73,15 @@
                                         <header>Synopsis</header>
                                         <div class="movie-runtime"></div>
                                         <div class="movie-synopsis"></div>
-                                        <div class="cast-container">
-                                            <header>Cast</header>
-                                            <div class="movie-cast"></div>
-                                        </div>
-                                        <div class="directors-container">
-                                            <header>Directors</header>
-                                            <div class="movie-directors"></div>
+                                        <div class="movie-staff">
+                                            <div class="cast-container">
+                                                <header>Cast</header>
+                                                <div class="movie-cast"></div>
+                                            </div>
+                                            <div class="directors-container">
+                                                <header>Directors</header>
+                                                <div class="movie-directors"></div>
+                                            </div>
                                         </div>
                                     </div>    
                                     <div class="showings-container">
@@ -97,21 +100,25 @@
               <div class="page" id="page-showing">
                     <header>Select Your Tickets</header>
                     <div class="content">
-                        <div class="poster-strip">
+                        <div class="showing-tickets-form-container">
                             <div class="poster-container">
                                 <img class="movie-poster" src="" alt=""/>
                                 <div class="movie-rating"><span class="title">Rating: </span><span class="rating"></span></div>
                             </div>
-                            <div class="poster-strip-content">
+                            <div class="showing-tickets-form">
                                 <div class="showing-tickets-container">
-                                    <div><span class="theater-name"></span> (<span class="theater-type"></span>) <span class="showing-time"></span></div>
+                                    <div class="showing-description"><span class="theater-name"></span> (<span class="theater-type"></span>) <span class="showing-time"></span></div>
                                     <div class="showing-tickets"></div>
                                     <button class="add-tickets">Add a different type of ticket</button>
                                 </div>
-                                <div class="showing-controls-container">
-                                    <div>Subtotal: <span class="tickets-grand-total"></span></div>
-                                    <div>Tax: $0.00</div>
-                                    <div>Total: <span class="tickets-grand-total"></span></div>
+                                <div class="ticket-totals-container float-group">
+                                    <table class="ticket-totals ">
+                                        <tr><td class="title">Subtotal:</td><td class="currency-symbol">$</td><td class="currency tickets-grand-total"></td></tr>
+                                        <tr><td class="title">Tax:</td><td class="currency-symbol">$</td><td class="currency">0.00</td></tr>
+                                        <tr><td class="title">Total:</td><td class="currency-symbol">$</td><td class="currency tickets-grand-total"></td></tr>
+                                    </table>
+                                </div>
+                                <div class="showing-controls-container float-group">
                                     <button class="purchase-tickets">Purchase Ticket(s)</button>
                                 </div>
                             </div>
@@ -124,32 +131,44 @@
               </div>
               <div class="page" id="page-purchase">
                     <header>
-                        <button class="purchase-option-cash">Cash</button>
-                        <button class="purchase-option-card">Card</button>
-                        <button class="purchase-option-gift">Gift</button>
+                        Puchase Tickets
                     </header>
                     <div class="content">
-                        <div class="tickets"></div>
-                        <div class="purchase-options">
-                            <div class="purchase-option cash">
-                                <div>
-                                    <header>Please Insert Cash</header>
-                                    <button class="cash-continue">Continue</button>
+                        <div class="tickets-container">
+                            <header>Purchase Summary</header>
+                            <div class="tickets"></div>
+                            <div class="payment-method-options-container">
+                                <header>Select a payment method</header>
+                                <div class="payment-method-options">
+                                    <button class="payment-method-option cash">Cash</button>
+                                    <button class="payment-method-option card">Card</button>
+                                    <button class="payment-method-option gift">Gift</button>
                                 </div>
                             </div>
-                            <div class="purchase-option card">
-                                <div>
-                                    <header>Please Enter Credit Card</header>
-                                    <input class="credit-card-number" type="text" maxlength="16" />
-                                    <button class="card-continue" disabled="disabled">Purchase Ticket(s)</button>
+                            <div class="purchase-option-forms">
+                                <div class="purchase-option-form cash">
+                                    <div>
+                                        <header>Please Insert Cash</header>
+                                        <div class="action-indicator"></div>
+                                    </div>
+                                </div>
+                                <div class="purchase-option-form card">
+                                    <div>
+                                        <header>Please Swipe Your Credit Card</header>
+                                        <div class="action-indicator"></div>
+                                    </div>
+                                </div>
+                                <div class="purchase-option-form gift">
+                                    <div>
+                                        <header>Please Swipe Your Gift Card</header>
+                                        <div class="action-indicator"></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="purchase-option gift">
-                                <div>
-                                    <header>Please Swipe Gift Card</header>
-                                    <button class="gift-continue">Continue</button>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="transparent">
+                            <textarea class="card-input" rows="6" cols="40"></textarea>
+                            <input type="text" class="card-number" />
                         </div>
                     </div>
                     <footer>
@@ -158,18 +177,23 @@
                     </footer>
               </div>
               <div class="page" id="page-purchase-results">
-                    <header class="purchase-status"></header>
-                    <div class="content">
-                        <div class="tickets"></div>
-                        <div class="receipt-data">
-                            <div>
-                                <div>Payment Type: <span class="payment-type"></span></div>
-                                <div class="payment-type-info"></div>
+                    <header>Purchase Tickets</header>
+                    <div class="content">                        
+                        <div class="tickets-container float-group">
+                            <header>Purchase Summary</header>
+                            <div class="purchase-status"></div>
+                            <div class="receipt-data">
+                                <div>
+                                    <div>Payment Type: <span class="payment-type"></span></div>
+                                    <div class="payment-type-info"></div>
+                                </div>
                             </div>
+                            <div class="tickets"></div>
+                            <button class="print-tickets">Print Tickets</button>
                         </div>
                     </div>
                     <footer>
-                        <button class="print-tickets">Print Tickets</button>
+                        <button class="return-main-menu">Back to Main Menu</button>
                     </footer>
               </div>
               <div class="page" id="page-ticket-search">                  
@@ -209,11 +233,25 @@
                     </footer>
               </div>
               <div class="page" id="page-print-tickets">
-                    <div class="instructions">
-                        <p>Confirm that the tickets below are correct, then select the &ldquo;Print Tickets&rdquo; button to continue. If the tickets below are not correct, please select the &ldquo;Cancel&rdquo; button and alert an attendant at the manned Box Office.</p>
+                  <header class="float-group">
+                      <span class="title">Print Tickets</span>
+                      <div class="controls">
+                          <button class="cancel-print-tickets">Cancel</button>
+                          <button class="print-tickets">Print Ticket(s)</button>
+                      </div>
+                  </header>
+                    <div class="content">
+                        <div class="instructions">
+                            <p>
+                                Confirm that the tickets below are correct, then select the &ldquo;Print Tickets&rdquo; button to continue.<br />
+                                If the tickets below are not correct, please select the &ldquo;Cancel&rdquo; button and alert an attendant at the manned Box Office.
+                            </p>
+                        </div>
+                        <div class="tickets-container"></div>
+                        <div class="form-controls">
+                            
+                        </div>
                     </div>
-                    <div class="ticket-summary"></div>
-                    <button class="print-tickets">Print Ticket(s)</button>
                     <footer>
                         <button class="return-main-menu">Back to Main Menu</button>
                     </footer>

@@ -244,42 +244,49 @@ button:focus {
 }
 
 /* page-movie and page-showing */
-.poster-strip {
-    background-color: rgba(0, 0, 0, 0.75);
-    border-top: solid thin #222;
-    border-bottom: solid thin #222;
-    max-height: 50%;
-    padding: 2em;
-    position: absolute;
-    width: 100%;
-    top: 20%;
+.poster-container
+{
+    display:inline-block;
+    margin-right:-2px;
 }
-.poster-strip .poster-container .movie-poster {
+.poster-container .movie-poster {
     width: 200px;
 }
-.poster-strip .poster-container .movie-rating {
+.poster-container .movie-rating {
     background-color: #8a231c;
     font-size: 1.2em;
     margin-top: -2px;
     padding: 0.5em;
     text-align: center;
+    color:#fff;
 }
-.poster-strip .poster-container .movie-rating .title {
+.poster-container .movie-rating .title {
     font-weight: bold;
 }
-.poster-strip .poster-container .movie-rating .rating {
+.poster-container .movie-rating .rating {
     font-style: italic;
+}
+
+.poster-strip {
+    background-color: rgba(0, 0, 0, 0.75);
+    border-top: solid thin #222;
+    border-bottom: solid thin #222;
+    max-height: 45%;
+    padding: 2em;
+    position: absolute;
+    width: 100%;
+    top: 20%;
+    display: flex;
 }
 .poster-strip > div,
 .poster-strip .poster-strip-content > div {
-    border: thin solid blue;
-    display: table-cell;
+    display: inline-block;
     vertical-align: top;
 }
 .poster-strip .poster-strip-content {
-    border: thin solid purple;
-    padding: 1em;
-    height: 100%;
+    max-height: 100%;
+    width:calc(100% - 200px);
+    display:flex;
 }
 
 /* page-movie */
@@ -304,6 +311,7 @@ button:focus {
     font-weight: bold;
     padding: 1em;
     text-shadow: 2px 3px 5px #222;
+    max-height: 10%;
 }
 #page-movie .content {
     padding: 0;
@@ -314,7 +322,8 @@ button:focus {
     margin-bottom: 0.5em;
 }
 #page-movie .movie-data {
-    width: 50%;
+    flex: 7;
+    padding:0 1em;
 }
 #page-movie .movie-data > div {
     font-size: 1.5em;
@@ -323,22 +332,29 @@ button:focus {
 #page-movie .movie-data .movie-synopsis {
     margin-bottom: 0.5em;
 }
+#page-movie .movie-data .movie-staff
+{
+    display:flex;
+}
 #page-movie .movie-data .cast-container,
 #page-movie .movie-data .directors-container {
     display: inline-block;
     vertical-align: top;
+    flex:1;
 }
 #page-movie .movie-data .movie-cast,
 #page-movie .movie-data .movie-directors {
     margin-left: 1em;
 }
 #page-movie .showings-container {
-    padding: 2em;
+    padding: 0 1em;
     height: 100%;
+    flex: 3;
 }
 #page-movie .showings {
     overflow: auto;
-    height: 90%;
+    height: 300px;
+    padding:0 .5em;
 }
 #page-movie .showings .showing {
     font-size: 2em;
@@ -357,15 +373,37 @@ button:focus {
 /* page-showing */
 #page-showing .content {
     padding: 0;
+    display:flex;
+    align-items: center;
+}
+#page-showing .showing-tickets-form-container
+{
+    width:70%;
+    margin:0 auto;
+    background-color:#fff;
+    border:solid 1px #e6e6e6;
+    box-shadow: 2px 2px 10px 2px #111;
+    padding:1em;
+    color:#333;
+    display:flex;
+}
+#page-showing .showing-tickets-form-container .showing-tickets-form
+{
+    width:calc(100% - 200px);
+    padding:0 1em;
+    font-size:1.2rem;
 }
 #page-showing .showing-tickets-container {
-    border: thin solid green;
-    width: 50%;
-    height: 100%;
+    width: 100%;
+}
+#page-showing .showing-tickets-container .showing-description {
+    font-size:1.3em;
+    margin-bottom:.8em;
 }
 #page-showing .showing-tickets {
     overflow: auto;
     height: 80%;
+    margin-bottom:2em;
 }
 #page-showing .showing-controls-container {
     text-align: right;
@@ -373,91 +411,303 @@ button:focus {
 }
 #page-showing .showing-tickets .ticket {
     width: 100%;
+    display:flex;
+    padding:.5em 0;
+    align-items:center;
 }
 #page-showing .showing-tickets .ticket * {
-    display: inline-block;
-    margin-left: 0.5em;
-    width: 10%;
-    vertical-align: middle;
+    flex:1;
+    padding:0 .5em;
+}
+#page-showing .showing-tickets .ticket .ticket-type {
+    padding:0;
+    color: inherit;
+    font-family: inherit;
 }
 #page-showing .showing-tickets .ticket .ticket-quantity-increase,
 #page-showing .showing-tickets .ticket .ticket-quantity-decrease,
 #page-showing .showing-tickets .ticket .ticket-multiplier,
+#page-showing .showing-tickets .ticket .ticket-quantity,
 #page-showing .showing-tickets .ticket .delete-ticket {
-    width: 1.5em;
-    height: 1.5em;
+    flex:.5;
     padding: 0;
 }
 #page-showing .showing-tickets .ticket .ticket-price,
 #page-showing .showing-tickets .ticket .ticket-total {
     text-align: right;
 }
-
-/* page-purchase and page-results */
-#page-purchase header {
-    padding: 0;
+#page-showing .add-tickets
+{
+    background-color: transparent;
+    border: none;
+    color: rgb(0, 97, 243);
+    text-shadow: none;
+    font-size: 1.1em;
+    display: block;
+    border-top: solid 1px #ccc;
+    width: 100%;
 }
-#page-purchase header button {
-    float: left;
-    padding: 0.25em;
-    width: 33.3%;
+#page-showing .ticket-totals-container
+{
+    margin: 1em 0;
+    background-color: #f3f3f3;
+    padding: 10px;
+    border: solid 1px #ddd;
+}
+#page-showing .ticket-totals
+{
+    float:right;
+    font-size:1.3em;
+}
+#page-showing .ticket-totals .title
+{
+    text-align: right;
+    font-weight: bold;
+}
+#page-showing .ticket-totals .currency
+{
+    text-align: right;
+}
+#page-showing .purchase-tickets
+{
+    width:100%;
+}
+
+/* page-purchase and page-purchase-results*/
+#page-purchase .content,
+#page-purchase-results .content
+{
+    padding: 0;
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    font-size:1.5em;
+}
+#page-purchase .tickets-container,
+#page-purchase-results .tickets-container
+{
+    width:70%;
+    margin:0 auto;
+    background-color:#fff;
+    border:solid 1px #e6e6e6;
+    box-shadow: 2px 2px 10px 2px #111;
+    padding:1em;
+    color:#333;
+}
+#page-purchase .tickets-container>header,
+#page-purchase .payment-method-options-container>header,
+#page-purchase-results .tickets-container>header,
+#page-purchase-results .payment-method-options-container>header
+{
+    font-size:1.4em;
+    margin-bottom:1em;
+}
+#page-purchase .tickets-container .tickets,
+#page-purchase-results .tickets-container .tickets
+{
+    margin-bottom: 2em;
+}
+#page-purchase .tickets-container .ticket,
+#page-purchase-results .tickets-container .ticket
+{
+    display:flex;
+}
+#page-purchase .tickets-container .ticket *,
+#page-purchase-results .tickets-container .ticket *
+{
+    flex:1;
+    margin:.2em 1em;
+}
+#page-purchase .tickets-container .ticket .ticket-movie-title,
+#page-purchase-results .tickets-container .ticket .ticket-movie-title
+{
+    flex:3;
+}
+#page-purchase .tickets-container .ticket .ticket-price,
+#page-purchase-results .tickets-container .ticket .ticket-price
+{
+    text-align:right;
+}
+#page-purchase .tickets-container .ticket .ticket-multiplier,
+#page-purchase .tickets-container .ticket .ticket-quantity,
+#page-purchase-results .tickets-container .ticket .ticket-multiplier,
+#page-purchase-results .tickets-container .ticket .ticket-quantity
+{
+    flex:.5;
+}
+#page-purchase .tickets-container .ticket.tickets-total,
+#page-purchase-results .tickets-container .ticket.tickets-total
+{
+    background-color:#f3f3f3;
+}
+
+/*page-purchase*/
+#page-purchase .payment-method-options-container
+{
+    margin-bottom:2em;
+}
+#page-purchase .payment-method-options
+{
+    display:flex;
+}
+#page-purchase .payment-method-option
+{
+    flex:1;
+    margin:0 1em;
+}
+
+#page-purchase .purchase-option-forms
+{
+    text-align: center;
+}
+#page-purchase .purchase-option-form
+{
+    display:none;
+    font-size:1.3em;
+}
+
+#page-purchase .transparent
+{
+    opacity:0;
+    position:absolute;
+}
+
+/*page-purchase-results*/
+#page-purchase-results .purchase-status
+{
+    background-color: rgb(100, 167, 55);
+    display: block;
+    padding: .3em 1.5em;
+    border: solid 1px green;
+    color: #fff;
+    font-size: 1.2em;
+    margin-bottom: 1em;
+}
+#page-purchase-results .receipt-data
+{
+    margin-bottom:1em;
+}
+#page-purchase-results .print-tickets
+{
+    float:right;
+    min-width:150px;
+}
+
+/*page-print-tickets*/
+#page-print-tickets .content
+{
+    padding: 0;
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    font-size:1.5em;
+}
+#page-print-tickets>header .controls
+{
+    float:right;
+    font-size:1.2rem;
+}
+#page-print-tickets>header .controls button
+{
+    min-width:150px;
+}
+#page-print-tickets .instructions
+{
+    margin-bottom:3em;
+}
+#page-print-tickets .tickets-container
+{
+    margin-bottom:1em;
+    font-size:1.5em;
+}
+
+#page-print-tickets .ticket
+{
+    background-color: #eee;
+    color: #333;
+    width: 800px;
+    height:300px;
+    font-size: .8em;
+    overflow:hidden;
+    margin-bottom:1.5em;
+}
+#page-print-tickets .ticket header
+{
+    background-color:#8a231c;
+    color:#fff;
+    padding:.2em;
+    height:60px;
+}
+#page-print-tickets .ticket header img,
+#page-print-tickets .ticket header .title
+{
+    display:inline-block;
+    vertical-align: middle;
+}
+#page-print-tickets .ticket header img
+{
+    margin-right:20px;
+}
+#page-print-tickets .ticket .ticket-content
+{
+    padding:.5em;
+}
+#page-print-tickets .ticket .main,
+#page-print-tickets .ticket .stub
+{
+    display:inline-block;
+    vertical-align: top;
+    width:60%;
+}
+#page-print-tickets .ticket .main>div,
+#page-print-tickets .ticket .stub>div
+{
+    font-family: 'Courier';
+}
+#page-print-tickets .ticket .main
+{
+    width:60%;
+    height: 100%;
+    border-right: dashed 3px #222;
+}
+#page-print-tickets .ticket .stub
+{
+    width:40%;
     height: 100%;
 }
-#page-purchase .content,
-#page-purchase-results .content {
-    font-size: 1.5em;
+
+#page-print-tickets .ticket .title
+{
+    font-weight:bold;
 }
-#page-purchase .tickets,
-#page-purchase-results .tickets {
+
+#page-print-tickets .ticket .admission-data
+{
+    display: flex;
     width: 100%;
-    height: 50%;
+    font-size: .9em;
 }
-#page-purchase .ticket,
-#page-purchase-results .ticket {
+#page-print-tickets .ticket .admission-data-item
+{
+    flex:1;
+    text-align:center;
+}
+#page-print-tickets .ticket .cinema-data
+{
+    font-size: .7em;
+}
+#page-print-tickets .ticket .main .cinema-data
+{
+    display: flex;
     width: 100%;
+    font-size: .7em;
 }
-#page-purchase .ticket *,
-#page-purchase-results .ticket * {
-    display: inline-block;
-    margin-left: 0.5em;
-    width: 10%;
-}
-#page-purchase .ticket .ticket-time,
-#page-purchase-results .ticket .ticket-time {
-    margin-left: 2em;
-}
-#page-purchase .ticket .ticket-movie-title,
-#page-purchase-results .ticket .ticket-movie-title {
-    float: left;
-    width: auto;
-}
-#page-purchase .ticket .ticket-multiplier,
-#page-purchase-results .ticket .ticket-multiplier {
-    width: auto;
-}
-#page-purchase .ticket .ticket-price,
-#page-purchase-results .ticket .ticket-price {
-    text-align: right;
-}
-#page-purchase .tickets-total .ticket-type,
-#page-purchase-results .tickets-total .ticket-type {
-    content: 'Total';
-    text-align: right;
-}
-#page-purchase .purchase-options,
-#page-purchase-results .receipt-data {
-    margin-left: 20%;
-    width: 80%;
-    height: 50%;
-}
-#page-purchase .purchase-options .cash {
-    display: none;
-}
-#page-purchase .purchase-options .card {
-    display: none;    
-}
-#page-purchase .purchase-options .gift {
-    display: none;    
+#page-print-tickets .ticket .main .cinema-data-item
+{
+    flex:1;
+    text-align:center;
 }
 
 /*******************************************************************************

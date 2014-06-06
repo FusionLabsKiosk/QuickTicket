@@ -17,5 +17,14 @@
             "scripts": ["background.js"]
         }
     },
-    "offline_enabled": true      
+    "offline_enabled": true,
+    
+    "sandbox": {
+        "pages": [
+            "scripts/scripts_sandbox.html"
+        ]
+    },
+    "permissions": [
+        "<all_urls>"
+    ]
 }

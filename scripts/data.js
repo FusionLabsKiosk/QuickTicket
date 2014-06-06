@@ -40,6 +40,7 @@ data.initializeDataJson = function(json) {
         movie.Directors = m.directors.slice();
         data.movies.push(movie);
     }
+    rotten.getInTheatersData();
     for (var i = 0; i < json.showings.length; i++) {
         var s = json.showings[i];
         data.showings.push(new Showing(s.id, data.getMovieByTitle(s.movieTitle), s.date, s.time, data.getTheaterByID(s.theater)));

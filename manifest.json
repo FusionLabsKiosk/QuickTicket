@@ -5,8 +5,9 @@
     
     "description": "The QuickTicket movie theater kiosk app for Chrome",
     "icons": { 
-        "16": "images/quickTickets_16.png", 
-        "128": "images/quickTickets_128.png" 
+        "16": "images/icon_16.png", 
+        "48": "images/icon_48.png", 
+        "128": "images/icon_128.png" 
     },
     
     "kiosk_enabled": true,

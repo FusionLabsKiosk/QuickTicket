@@ -1,6 +1,20 @@
-//Rotten Tomatoes API
+/**
+ * @fileOverview Rotten Tomatoes API
+ */
+
+/**
+ * Rotten Tomatoes API Namespace
+ * @type {Object}
+ */
 var rotten = {};
 
+/**
+ * Retrieves movie data for movies currently in theaters using the 
+ * Rotten Tomatoes API and parses the data into the data.movies Array.
+ * @param {Function} callback an optional function that is called upon 
+ *     completing the movie retrieval
+ * @returns {undefined}
+ */
 rotten.getInTheatersData = function(callback) {
     window.addEventListener('message', function(e) {
         if (e.data.script === 'rotten') {
@@ -15,6 +29,14 @@ rotten.getInTheatersData = function(callback) {
     });
 };
 
+/**
+ * Parses the provided array of movie data from Rotten Tomatoes into the 
+ * data.movies array.
+ * <p>
+ * This function is automatically called by rotten.getInTheatersData.
+ * @param {Array} movies
+ * @returns {undefined}
+ */
 rotten.parseMovieData = function(movies) {
     data.movies = [];
     
@@ -25,27 +47,29 @@ rotten.parseMovieData = function(movies) {
         movie.title = m.title;
         movie.rating = m.mpaa_rating;
         movie.runtime = m.runtime + ' min';
-        rotten.getMoviePoster(m, movie);
+        rotten.getMoviePoster(m.posters.original, movie);
         movie.synopsis = m.synopsis;
         for (var j = 0; j < m.abridged_cast.length; j++) {
             movie.cast.push(m.abridged_cast[j].name);
         }
-        //movie.directors = m.directors.slice();
+        //No director data from Rotten Tomatoes
+        //movie.directors = m.directors.slice(); 
         data.movies.push(movie);
     }
 };
 
-rotten.getMoviePoster = function(data, movie) {
-    rotten.getExternalImage(data.posters.original, function(src) {
-        movie.posterUrl = src;
-    });
-};
-
-rotten.getExternalImage = function(url, callback) {
+/**
+ * Retrieves an external movie poster image and creates a blob that is 
+ * accessible within the chrome app.
+ * @param {string} url the URL of the movie poster to retrieve
+ * @param {Movie} movie the Movie to set the posterUrl property
+ * @returns {undefined}
+ */
+rotten.getMoviePoster = function(url, movie) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'blob';
     xhr.onload = function() {
-        callback(window.URL.createObjectURL(xhr.response));
+        movie.posterUrl = window.URL.createObjectURL(xhr.response);
     };
     xhr.open('GET', url, true);
     xhr.send();

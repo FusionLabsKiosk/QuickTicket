@@ -1,10 +1,13 @@
 //Rotten Tomatoes API
 var rotten = {};
 
-rotten.getInTheatersData = function() {
+rotten.getInTheatersData = function(callback) {
     window.addEventListener('message', function(e) {
         if (e.data.script === 'rotten') {
             rotten.parseMovieData(e.data.movies);
+            if (callback !== undefined) {
+                callback();
+            }
         }
     });
     sandbox.message({
@@ -23,9 +26,7 @@ rotten.parseMovieData = function(movies) {
         movie.Title = m.title;
         movie.Rating = m.mpaa_rating;
         movie.Runtime = m.runtime + ' min';
-        rotten.getExternalImage(m.posters.original, function(src) {
-            movie.PosterURL = src;
-        });
+        rotten.getMoviePoster(m, movie);
         movie.Synopsis = m.synopsis;
         for (var j = 0; j < m.abridged_cast.length; j++) {
             movie.Cast.push(m.abridged_cast[j].name);
@@ -33,6 +34,12 @@ rotten.parseMovieData = function(movies) {
         //movie.Directors = m.directors.slice();
         data.movies.push(movie);
     }
+};
+
+rotten.getMoviePoster = function(data, movie) {
+    rotten.getExternalImage(data.posters.original, function(src) {
+        movie.PosterURL = src;
+    });
 };
 
 rotten.getExternalImage = function(url, callback) {

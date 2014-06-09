@@ -17,28 +17,27 @@ rotten.getInTheatersData = function(callback) {
 
 rotten.parseMovieData = function(movies) {
     data.movies = [];
-    console.log('Got movies (' + movies.length + ') First: ' + movies[0].title);
     
     for (var i = 0; i < movies.length; i++) {
         var m = movies[i];
         var movie = new Movie();
-        movie.ID = m.id;
-        movie.Title = m.title;
-        movie.Rating = m.mpaa_rating;
-        movie.Runtime = m.runtime + ' min';
+        movie.id = m.id;
+        movie.title = m.title;
+        movie.rating = m.mpaa_rating;
+        movie.runtime = m.runtime + ' min';
         rotten.getMoviePoster(m, movie);
-        movie.Synopsis = m.synopsis;
+        movie.synopsis = m.synopsis;
         for (var j = 0; j < m.abridged_cast.length; j++) {
-            movie.Cast.push(m.abridged_cast[j].name);
+            movie.cast.push(m.abridged_cast[j].name);
         }
-        //movie.Directors = m.directors.slice();
+        //movie.directors = m.directors.slice();
         data.movies.push(movie);
     }
 };
 
 rotten.getMoviePoster = function(data, movie) {
     rotten.getExternalImage(data.posters.original, function(src) {
-        movie.PosterURL = src;
+        movie.posterUrl = src;
     });
 };
 

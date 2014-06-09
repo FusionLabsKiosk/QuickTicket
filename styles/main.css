@@ -567,12 +567,6 @@ button:focus {
     font-size:1.3em;
 }
 
-#page-purchase .transparent
-{
-    opacity:0;
-    position:absolute;
-}
-
 /*page-purchase-results*/
 #page-purchase-results .purchase-status
 {

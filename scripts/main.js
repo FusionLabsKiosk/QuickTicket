@@ -3,7 +3,7 @@ var SlidePosition = {
     LEFT : "left", 
     RIGHT : "right"
 };
-var TrackType = {ONE:"one", TWO:"two", ONEANDTWO:"oneandtwo"};
+
 var TICKET_SLIDE = 200;
 var PURCHASE_SLIDE = 200;
 var SLIDE = 350;
@@ -61,8 +61,8 @@ function AddTicket(clearExisting) {
     
     var ticketsDisplayed = tickets.length;
     var ticket = $('<div/>').addClass('ticket').css('display', 'none').attr('data-id', ticketID);
-    ticket.append($('<span/>').addClass('showing-time').html(CurrentSession.Showing.Time));
-    ticket.append($('<span/>').addClass('showing-type').html(CurrentSession.Showing.Theater.Pricing.Name));
+    ticket.append($('<span/>').addClass('showing-time').html(CurrentSession.showing.time));
+    ticket.append($('<span/>').addClass('showing-type').html(CurrentSession.showing.theater.pricing.name));
     ticket.append($('<select/>').addClass('ticket-type'));
     ticket.append($('<span/>').addClass('ticket-price'));
     ticket.append($('<span/>').addClass('ticket-multiplier').html('x'));
@@ -82,9 +82,9 @@ function AddTicket(clearExisting) {
     $('#page-showing .ticket-type').each(function() {
         var showingTicketType = $(this);
         if (showingTicketType.children().length === 0) {
-            var tickets = CurrentSession.Showing.Theater.Pricing.Tickets;
+            var tickets = CurrentSession.showing.theater.pricing.tickets;
             for (var i = 0; i < tickets.length; i++) {
-                var ticketTypeString = '<option value="' + tickets[i].TicketType.Name + '">' + tickets[i].TicketType.Name + '</option>';
+                var ticketTypeString = '<option value="' + tickets[i].ticketType.name + '">' + tickets[i].ticketType.name + '</option>';
                 showingTicketType.append(ticketTypeString);
             }
         }
@@ -122,11 +122,11 @@ function UpdateTickets() {
     $.each($('#page-showing .ticket'), function() {
        var ticket = $(this);
        var ticketType = $('.ticket-type option:selected', ticket).val();
-       var tickets = CurrentSession.Showing.Theater.Pricing.Tickets;
+       var tickets = CurrentSession.showing.theater.pricing.tickets;
        var price = 0.00;
        for (var i = 0; i < tickets.length; i++) {
-           if (tickets[i].TicketType.Name === ticketType) {
-               price = tickets[i].Price;
+           if (tickets[i].ticketType.name === ticketType) {
+               price = tickets[i].price;
                break;
            }
        }
@@ -146,10 +146,10 @@ function UpdateTickets() {
 function CreateTicketDiv(ticket) {
     var quantity = typeof ticket.Quantity === 'undefined' ? 1 : ticket.Quantity;
     return $('<div/>').addClass('ticket')
-                .append($('<span/>').addClass('ticket-movie-title').html(CurrentSession.Showing.Movie.Title))
-                .append($('<span/>').addClass('ticket-time').html(CurrentSession.Showing.Time))
-                .append($('<span/>').addClass('ticket-type').html(ticket.TicketType.Name))
-                .append($('<span/>').addClass('ticket-price').html(FormatCurrency(ticket.Price)))
+                .append($('<span/>').addClass('ticket-movie-title').html(CurrentSession.showing.movie.title))
+                .append($('<span/>').addClass('ticket-time').html(CurrentSession.showing.time))
+                .append($('<span/>').addClass('ticket-type').html(ticket.ticketType.name))
+                .append($('<span/>').addClass('ticket-price').html(FormatCurrency(ticket.price)))
                 .append($('<span/>').addClass('ticket-multiplier').html('x'))
                 .append($('<span/>').addClass('ticket-quantity').html(quantity));
 }
@@ -160,7 +160,7 @@ function CreateTicketTotalDiv(priceHtml) {
         totalTitle = '<strong>Total</strong>'
     }
     return $('<div/>').addClass('ticket')
-                .append($('<span/>').addClass('ticket-movie-title').css('visibility', 'hidden').html(CurrentSession.Showing.Movie.Title))
+                .append($('<span/>').addClass('ticket-movie-title').css('visibility', 'hidden').html(CurrentSession.showing.movie.title))
                 .append($('<span/>').addClass('ticket-time').html(''))
                 .append($('<span/>').addClass('ticket-type').html(totalTitle))
                 .append($('<span/>').addClass('ticket-price').html(priceHtml))
@@ -175,17 +175,17 @@ function CreatePrintTickets(ticket) {
                             '<div class="main">',
                                 '<header><img src="images/ioCinemaIcon.png" /><span class="header-title">I/0 Cinema 10</span></header>',
                                 '<div class="ticket-content">',
-                                    '<div class="theater"><span class="title">Theater:</span><span class="theater-name">' + CurrentSession.Showing.Theater.Name + '</span></div>',
-                                    '<div class="movie"><span class="ticket-movie-title title">' + CurrentSession.Showing.Movie.Title + '</span></div>',
-                                    '<div class="rating"><span class="title">Rating:</span><span class="ticket-rating">' + CurrentSession.Showing.Movie.Rating + '</span></div>',
-                                    '<div class="time"><span class="title">Showing:</span><span class="ticket-time">' + CurrentSession.Showing.Time + '</span></div>',
+                                    '<div class="theater"><span class="title">Theater:</span><span class="theater-name">' + CurrentSession.showing.theater.name + '</span></div>',
+                                    '<div class="movie"><span class="ticket-movie-title title">' + CurrentSession.showing.movie.title + '</span></div>',
+                                    '<div class="rating"><span class="title">Rating:</span><span class="ticket-rating">' + CurrentSession.showing.movie.rating + '</span></div>',
+                                    '<div class="time"><span class="title">Showing:</span><span class="ticket-time">' + CurrentSession.showing.time + '</span></div>',
                                     '<div class="date"><span class="admission-date title">' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
                                     '<div class="admission-data">',
-                                        '<div class="admission-data-item admission"><span class="title">Admit:</span>1 <span class="ticket-type">' + ticket.TicketType.Name + '</span></div>',
-                                        '<div class="admission-data-item price"><span class="title">Price:</span><span class="ticket-price">' + FormatCurrency(ticket.Price) + '</span></div>',
+                                        '<div class="admission-data-item admission"><span class="title">Admit:</span>1 <span class="ticket-type">' + ticket.ticketType.name + '</span></div>',
+                                        '<div class="admission-data-item price"><span class="title">Price:</span><span class="ticket-price">' + FormatCurrency(ticket.price) + '</span></div>',
                                     '</div>',
                                     '<div class="cinema-data">',
-                                        '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + ticket.ID + '</span></div>',
+                                        '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + ticket.id + '</span></div>',
                                         '<div class="cinema-data-item issue"><span class="title">Issued:</span><span class="ticket-issue-data">' + todaysDate.getHours() + ':' + todaysDate.getMinutes() + ":" + todaysDate.getSeconds() + ' ' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
                                         '<div class="cinema-data-item issuer"><span class="title">By:</span><span class="ticket-issuer">Kiosk</span></div>',
                                     '</div>',
@@ -194,13 +194,13 @@ function CreatePrintTickets(ticket) {
                             '<div class="stub">',
                                 '<header></header>',
                                 '<div class="ticket-content">',
-                                    '<div class="theater"><span class="title">Theater:</span><span class="theater-name">' + CurrentSession.Showing.Theater.Name + '</span></div>',
+                                    '<div class="theater"><span class="title">Theater:</span><span class="theater-name">' + CurrentSession.showing.theater.name + '</span></div>',
                                     '<div class="date"><span class="admission-date title">' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
-                                    '<div class="time"><span class="title">Showing:</span><span class="ticket-time">' + CurrentSession.Showing.Time + '</span></div>',
-                                    '<div class="movie"><span class="ticket-movie-title title">' + CurrentSession.Showing.Movie.Title + '</span></div>',
-                                    '<div class="admission">1 <span class="ticket-type">' + ticket.TicketType.Name + '</span></div>',
+                                    '<div class="time"><span class="title">Showing:</span><span class="ticket-time">' + CurrentSession.showing.time + '</span></div>',
+                                    '<div class="movie"><span class="ticket-movie-title title">' + CurrentSession.showing.movie.title + '</span></div>',
+                                    '<div class="admission">1 <span class="ticket-type">' + ticket.ticketType.name + '</span></div>',
                                     '<div class="cinema-data">',
-                                        '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + ticket.ID + '</span></div>',
+                                        '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + ticket.id + '</span></div>',
                                         '<div class="cinema-data-item issue"><span class="title">Issued:</span><span class="ticket-issue-data">' + todaysDate.getHours() + ':' + todaysDate.getMinutes() + ":" + todaysDate.getSeconds() + ' ' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
                                         '<div class="cinema-data-item issuer"><span class="title">By:</span><span class="ticket-issuer">Kiosk</span></div>',
                                     '</div>',
@@ -214,10 +214,10 @@ function CreatePrintTickets(ticket) {
     
 //    
 //    return $('<div/>').addClass('ticket')
-//                .append($('<span/>').addClass('ticket-movie-title').html(CurrentSession.Showing.Movie.Title))
-//                .append($('<span/>').addClass('ticket-time').html(CurrentSession.Showing.Time))
-//                .append($('<span/>').addClass('ticket-type').html(ticket.TicketType.Name))
-//                .append($('<span/>').addClass('ticket-price').html(FormatCurrency(ticket.Price)))
+//                .append($('<span/>').addClass('ticket-movie-title').html(CurrentSession.showing.movie.title))
+//                .append($('<span/>').addClass('ticket-time').html(CurrentSession.showing.time))
+//                .append($('<span/>').addClass('ticket-type').html(ticket.ticketType.name))
+//                .append($('<span/>').addClass('ticket-price').html(FormatCurrency(ticket.price)))
 //                .append($('<span/>').addClass('ticket-multiplier').html('x'))
 //                .append($('<span/>').addClass('ticket-quantity').html(quantity));
 }
@@ -232,21 +232,6 @@ function ShowPurchaseOption(option) {
             $(this).hide(PURCHASE_SLIDE);
         }
     });
-}
-
-function VerifyPayment(paymentType)
-{
-    //Payment verification logic
-    CurrentSession.Receipt.PaymentType = paymentType;
-    if(paymentType == 'Credit')
-    {
-        CurrentSession.Receipt.PaymentTypeInfo = 'Card Charged: xxxx-xxxx-xxxx-' + $('#page-purchase .card-number').val().substring(12);
-    }
-    else if(paymentType == 'Gift')
-    {
-        CurrentSession.Receipt.PaymentTypeInfo = 'Gift Card Used: xxxx-xxxx-5711-GIFT';
-    }
-    NavigateTo('#page-purchase-results', SlidePosition.RIGHT, Prerequisite_Purchase_Results);
 }
 
 function PrintHTML(html) {
@@ -304,9 +289,9 @@ function Prerequisite_Showing() {
     //timeout to allow for page transitions
     setTimeout(function() {
         var pageShowing = $('#page-showing');
-        CurrentSession.Showing.Movie.setMovieData(pageShowing);
-        CurrentSession.Showing.setShowingData(pageShowing);
-        CurrentSession.Showing.Theater.setTheaterData(pageShowing);
+        CurrentSession.showing.movie.setMovieData(pageShowing);
+        CurrentSession.showing.setShowingData(pageShowing);
+        CurrentSession.showing.theater.setTheaterData(pageShowing);
         
         AddTicket(true);
         
@@ -318,17 +303,17 @@ function Prerequisite_Purchase() {
     //timeout to allow for page transitions
     setTimeout(function()
     {
-        $('*').blur();
-        var receipt = new Receipt(CurrentSession.Showing);
-        CurrentSession.Receipt = receipt;
+        
+        var receipt = new Receipt(CurrentSession.showing);
+        CurrentSession.receipt = receipt;
 
         $.each($('#page-showing .showing-tickets .ticket'), function() {
             var ticketForm = $(this);
             var ticketType = $('.ticket-type option:selected', ticketForm).val();
             var ticket;
-            var tickets = CurrentSession.Showing.Theater.Pricing.Tickets;
+            var tickets = CurrentSession.showing.theater.pricing.tickets;
             for (var i = 0; i < tickets.length; i++) {
-                if (tickets[i].TicketType.Name === ticketType) {
+                if (tickets[i].ticketType.name === ticketType) {
                     ticket = tickets[i];
                     break;
                 }
@@ -336,7 +321,7 @@ function Prerequisite_Purchase() {
             var quantity = parseInt($('.ticket-quantity', ticketForm).html());
 
             for (var i = 0; i < quantity; i++) {
-                receipt.Tickets.push(ticket);
+                receipt.tickets.push(ticket);
             }
         });
 
@@ -345,7 +330,7 @@ function Prerequisite_Purchase() {
         var ticketQuantities = receipt.getTicketsWithQuantity();
         for (var i = 0; i < ticketQuantities.length; i++) {
             CreateTicketDiv(ticketQuantities[i]).appendTo($('#page-purchase .tickets'));
-            ticketTotal += (ticketQuantities[i].Price * ticketQuantities[i].Quantity);
+            ticketTotal += (ticketQuantities[i].price * ticketQuantities[i].Quantity);
         }
         CreateTicketTotalDiv('----------').addClass('tickets-total-line').appendTo($('#page-purchase .tickets'));
         CreateTicketTotalDiv(FormatCurrency(ticketTotal)).addClass('tickets-total').appendTo($('#page-purchase .tickets'));
@@ -355,15 +340,15 @@ function Prerequisite_Purchase() {
 }
 function Prerequisite_Purchase_Results() {
     //timeout to allow for page transitions
-    setTimeout(function() {
+    setTimeout(function() {        
         //Assume successful transaction
         $('#page-purchase-results .purchase-status').html('Purchase Successful');
         
         $('#page-purchase-results .tickets').empty();
         $('#page-purchase-results .tickets').append($('#page-purchase .tickets'));
         
-        $('#page-purchase-results .payment-type').html(CurrentSession.Receipt.PaymentType);
-        $('#page-purchase-results .payment-type-info').html(CurrentSession.Receipt.PaymentTypeInfo);
+        $('#page-purchase-results .payment-type').html(CurrentSession.receipt.paymentType);
+        $('#page-purchase-results .payment-type-info').html(CurrentSession.receipt.paymentTypeInfo);
         
         setTimeout(function(){$('#page-purchase-results').trigger('prerequisiteComplete');}, SLIDE_ANIMATION);
     }, SLIDE);
@@ -372,10 +357,10 @@ function Prerequisite_Print_Tickets() {
     //timeout to allow for page transitions
     setTimeout(function() {
         $('#page-print-tickets .tickets-container').empty();
-        var receipt = CurrentSession.Receipt;
-        for (var i = 0; i < receipt.Tickets.length; i++)
+        var receipt = CurrentSession.receipt;
+        for (var i = 0; i < receipt.tickets.length; i++)
         {
-            CreatePrintTickets(receipt.Tickets[i]);
+            CreatePrintTickets(receipt.tickets[i]);
             //.appendTo($('#page-print-tickets .tickets-container'));
         }
         
@@ -427,77 +412,6 @@ function FormatDecimalFromCurrency(value)
     return parseFloat(value.substr(1));
 }
 
-function GetCardData(cardData)
-{
-    this.CurrentCreditCard = new CreditCard();
-    
-    var trackType = 0;
-    var containsEquals = false;
-    var containsCarot = false;
-    
-    if(cardData.indexOf('^') > -1)
-    {
-        containsCarot = true;
-    }
-    if(cardData.indexOf('=') > -1)
-    {
-        containsEquals = true;
-    }
-    
-    if(containsCarot == true && containsEquals == true)
-    {
-        trackType = TrackType.ONEANDTWO;
-    }
-    else if(containsCarot == true)
-    {
-        trackType = TrackType.ONE;
-    }
-    else if(containsEquals == true)
-    {
-        TrackType = TrackType.TWO;
-    }
-    else
-    {
-        //error
-        console.error('card read error');
-        console.log('Card Data: ' + cardData);
-        this.CurrentCreditCard = undefined;
-        $('#page-purchase .card-input').val('');
-        $('#page-purchase .card-number').trigger('change');
-        return;
-    }
-    
-    var cardNumber;
-    
-    if(trackType == TrackType.ONE)
-    {
-        
-    }
-    
-    if(trackType == TrackType.TWO)
-    {
-        
-    }
-    
-    if(trackType == TrackType.ONEANDTWO)
-    {
-        //strip percentage
-        if(cardData.substring(0,1) == '%')
-        {
-            cardData = cardData.substring(1, cardData.length);
-        }
-        
-        var cardDataArray = cardData.split('^');
-        CurrentCreditCard.CardNumber = cardDataArray[0].substring(1, cardDataArray[0].length)
-        
-    }
-    
-    $('#page-purchase .card-number').val(CurrentCreditCard.CardNumber);
-    $('#page-purchase .card-number').trigger('change');
-    $('#page-purchase .card-input').val('');
-}
-
-
 /*******************************************************************************
  * Listeners and Event Handlers
  ******************************************************************************/
@@ -508,13 +422,11 @@ function AddListeners()
     $('#page-movie').on('afterclose', Movie_AfterCloseHandler);
     $('#page-showing .purchase-tickets').click(Showing_PurchaseTickets_ClickHandler);
     $('#page-showing .add-tickets').click(Showing_AddTickets_ClickHandler);
-    $('#page-purchase').on('closeComplete', Purchase_CloseCompleteHandler);
-    $('#page-purchase').on('afterclose', Purchase_AfterCloseHandler);
-    $('#page-purchase *').unbind('click').click(Purchase_ClickHandler);
     $('#page-purchase .payment-method-option.cash').click(Purchase_Cash_ClickHandler);
     $('#page-purchase .payment-method-option.card').click(Purchase_Card_ClickHandler);
     $('#page-purchase .payment-method-option.gift').click(Purchase_Gift_ClickHandler);
-    $('#page-purchase .card-number').change(Purchase_CardNumber_ChangeHandler);
+    $('#page-purchase').on(swiper.EVENT_NAME, Purchase_CardSwiped);
+    swiper.addTrigger($('#page-purchase'));
     $('#page-purchase-results .print-tickets').click(PurchaseResults_PrintTickets_ClickHandler);
     $('#page-ticket-search .enter-confirmation-code').click(TicketSearch_EnterConfirmationCode_ClickHandler);
     $('#page-ticket-search .enter-credit-card').click(TicketSearch_EnterCreditCard_ClickHandler);
@@ -549,7 +461,7 @@ function Movies_ViewShowTimes_ClickHandler(e)
 function Movie_MovieShowing_ClickHandler(e)
 {
     var showingID = $(e.target).closest('.showing').attr('data-id');
-    CurrentSession.Showing = data.getShowingByID(showingID);
+    CurrentSession.showing = data.getShowingByID(showingID);
     NavigateTo('#page-showing', SlidePosition.RIGHT, Prerequisite_Showing);
 }
 function Movie_AfterCloseHandler(e)
@@ -585,55 +497,45 @@ function Showing_PurchaseTickets_ClickHandler(e)
 }
 function Purchase_Cash_ClickHandler(e) 
 {
+    CurrentSession.receipt.paymentType = 'Cash';
+    swiper.scanning = false;
     ShowPurchaseOption('cash');
 }
 function Purchase_Card_ClickHandler(e) 
 {
+    CurrentSession.receipt.paymentType = 'Credit';
+    swiper.scanning = true;
+    $('#page-purchase .purchase-option-form.card header').html('Please Swipe Your Credit Card');
     ShowPurchaseOption('card');
 }
 function Purchase_Gift_ClickHandler(e) 
 {
+    CurrentSession.receipt.paymentType = 'Gift';
+    swiper.scanning = true;
+    $('#page-purchase .purchase-option-form.gift header').html('Please Swipe Your Gift Card');
     ShowPurchaseOption('gift');
-}
-function Purchase_CloseCompleteHandler(e)
-{
-    $('#page-purchase .card-input').focus();
-    $('#page-purchase .card-input').keyup(Purchase_CardInput_OnKeyUpHandler);
-}
-function Purchase_AfterCloseHandler(e)
-{
-    $('#page-purchase .card-input').unbind('keyup');
-    $('#page-purchase .card-input').val('');
-    $('#page-purchase .card-number').val('');
-}
-function Purchase_ClickHandler(e)
-{
-    $('#page-purchase .card-input').focus();
-}
-function Purchase_CardInput_OnKeyUpHandler(e)
-{
-    console.log();
-    if(e.keyCode == 13)
-    {
-        GetCardData($('#page-purchase .card-input').val());
-    }
 }
 function Purchase_CashPurchase_ClickHandler(e)
 {
     //Payment verification logic
-    CurrentSession.Receipt.PaymentType = 'Cash';
-    CurrentSession.Receipt.PaymentTypeInfo = 'Change Due: $0.00';
+    CurrentSession.receipt.paymentType = 'Cash';
+    CurrentSession.receipt.paymentTypeInfo = 'Change Due: $0.00';
     NavigateTo('#page-purchase-results', SlidePosition.RIGHT, Prerequisite_Purchase_Results);
 }
-function Purchase_CardNumber_ChangeHandler(e)
+function Purchase_CardSwiped(e, card) 
 {
-    if(ValidateCardNumberFormat($(e.target).val()) == true)
-    {
-        VerifyPayment('Credit');
+    if (card.isValid()) {
+        //TODO: After checking valid swipe, send card info to payment processing
+        CurrentSession.receipt.paymentObject = card;
+        CurrentSession.receipt.paymentTypeInfo = 'Card Charged: xxxx-xxxx-xxxx-' + card.getLast4();
+        
+        swiper.scanning = false;
+        
+        NavigateTo('#page-purchase-results', SlidePosition.RIGHT, Prerequisite_Purchase_Results);
     }
-    else if(ValidateConfirmationCodeFormat($(e.target).val()) == true)
-    {
-        VerifyPayment('Gift');
+    else {
+        $('#page-purchase .purchase-option-form.card header').html('Invalid Card, Please Try Again');
+        $('#page-purchase .purchase-option-form.gift header').html('Invalid Card, Please Try Again');
     }
 }
 function PurchaseResults_PrintTickets_ClickHandler(e)

@@ -19,7 +19,6 @@ data.initializeData = function() {
 };
 
 data.generateShowtimes = function() {
-    console.log('Starting showtime generation');
     data.showings = [];
     var now = new Date();
     var date = data.MONTHS[now.getMonth()] + ' ' + now.getDate();
@@ -52,7 +51,6 @@ data.generateShowtimes = function() {
             }
         }
     }
-    console.log('Finished generating showings: ' + data.showings.length);
 };
 
 
@@ -66,7 +64,7 @@ data.initializeDataJson = function(json) {
         var p = json.pricings[i];
         var pricing = new Pricing(p.id, p.name);
         for (var j = 0; j < p.tickets.length; j++) {
-            pricing.Tickets.push(new Ticket(data.getTicketTypeByID(p.tickets[j].id), p.tickets[j].price));
+            pricing.tickets.push(new Ticket(data.getTicketTypeByID(p.tickets[j].id), p.tickets[j].price));
         }
         data.pricings.push(pricing);
     }
@@ -77,14 +75,14 @@ data.initializeDataJson = function(json) {
     for (var i = 0; i < json.movies.length; i++) {
         var m = json.movies[i];
         var movie = new Movie();
-        movie.ID = m.id;
-        movie.Title = m.title;
-        movie.Rating = m.rating;
-        movie.Runtime = m.runtime;
-        movie.PosterURL = m.posterUrl;
-        movie.Synopsis = m.synopsis;
-        movie.Cast = m.cast.slice();
-        movie.Directors = m.directors.slice();
+        movie.id = m.id;
+        movie.title = m.title;
+        movie.rating = m.rating;
+        movie.runtime = m.runtime;
+        movie.posterUrl = m.posterUrl;
+        movie.posterUrl = m.synopsis;
+        movie.cast = m.cast.slice();
+        movie.directors = m.directors.slice();
         data.movies.push(movie);
     }
     for (var i = 0; i < json.showings.length; i++) {
@@ -96,25 +94,25 @@ data.initializeDataJson = function(json) {
 
 //Helper Functions
 data.getTicketTypeByID = function(id) {
-    return data.getObjectByProperty(data.ticketTypes, 'ID', id);
+    return data.getObjectByProperty(data.ticketTypes, 'id', id);
 };
 data.getPricingByName = function(name) {
-    return data.getObjectByProperty(data.pricings, 'Name', name); 
+    return data.getObjectByProperty(data.pricings, 'name', name); 
 };
 data.getMovieByID = function(id) {
-    return data.getObjectByProperty(data.movies, 'ID', id);
+    return data.getObjectByProperty(data.movies, 'id', id);
 };
 data.getMovieByTitle = function(name) {
-    return data.getObjectByProperty(data.movies, 'Title', name); 
+    return data.getObjectByProperty(data.movies, 'title', name); 
 };
 data.getTheaterByID = function(id) {
-    return data.getObjectByProperty(data.theaters, 'ID', id);
+    return data.getObjectByProperty(data.theaters, 'id', id);
 };
 data.getShowingByID = function(id) {
-    return data.getObjectByProperty(data.showings, 'ID', id);
+    return data.getObjectByProperty(data.showings, 'id', id);
 };
 data.getShowingsByMovie = function(movie) {
-    return data.getArrayByProperty(data.showings, 'Movie', movie); 
+    return data.getArrayByProperty(data.showings, 'movie', movie); 
 };
 //This function will only return a the first found object, or undefined
 data.getObjectByProperty = function(array, property, value) {

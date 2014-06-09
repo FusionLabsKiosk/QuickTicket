@@ -11,8 +11,6 @@ var SLIDE_ANIMATION = 750;
 
 var CurrentSession;
 
-var CurrentCreditCard;
-
 $(document).ready(Init);
 
 function Init() {

@@ -142,7 +142,7 @@ function UpdateTickets() {
     $('#page-showing .tickets-grand-total').html(FormatCurrency(totalPrice, true));
 }
 function CreateTicketDiv(ticket) {
-    var quantity = typeof ticket.Quantity === 'undefined' ? 1 : ticket.Quantity;
+    var quantity = typeof ticket.quantity === 'undefined' ? 1 : ticket.quantity;
     return $('<div/>').addClass('ticket')
                 .append($('<span/>').addClass('ticket-movie-title').html(CurrentSession.showing.movie.title))
                 .append($('<span/>').addClass('ticket-time').html(CurrentSession.showing.time))
@@ -166,7 +166,7 @@ function CreateTicketTotalDiv(priceHtml) {
                 .append($('<span/>').addClass('ticket-quantity').html(''));
 }
 function CreatePrintTickets(ticket) {
-    var quantity = typeof ticket.Quantity === 'undefined' ? 1 : ticket.Quantity;
+    var quantity = typeof ticket.quantity === 'undefined' ? 1 : ticket.quantity;
     var todaysDate = new Date();
     
     var ticketHTML = ['<div class="ticket">',
@@ -328,7 +328,7 @@ function Prerequisite_Purchase() {
         var ticketQuantities = receipt.getTicketsWithQuantity();
         for (var i = 0; i < ticketQuantities.length; i++) {
             CreateTicketDiv(ticketQuantities[i]).appendTo($('#page-purchase .tickets'));
-            ticketTotal += (ticketQuantities[i].price * ticketQuantities[i].Quantity);
+            ticketTotal += (ticketQuantities[i].price * ticketQuantities[i].quantity);
         }
         CreateTicketTotalDiv('----------').addClass('tickets-total-line').appendTo($('#page-purchase .tickets'));
         CreateTicketTotalDiv(FormatCurrency(ticketTotal)).addClass('tickets-total').appendTo($('#page-purchase .tickets'));

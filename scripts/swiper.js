@@ -9,6 +9,7 @@ swiper.swipeStart = 0;
 swiper.triggers = [];
 swiper.buffer = [];
 swiper.delay = 250;
+swiper.bypass = 96;
 
 $(document).ready(function() {
     $(document).bind('keypress', swiper.swiped);
@@ -31,7 +32,23 @@ swiper.swiped = function(e) {
             swiper.buffer = [];
         }
         
-        if (e.keyCode === 13) {
+        if (e.keyCode === swiper.bypass) {
+            var card = new swiper.Card();
+            card.track1.valid = true;
+            card.track1.format = 'B';
+            card.track1.number = '4242424242424242';
+            card.track1.name = 'DOE/JOHN';
+            card.track1.nameParts = card.track1.name.split('/');
+            card.track1.exp = 0114;
+            card.track1.expYear = 14;
+            card.track1.expMonth = 1;
+            card.track1.service = 101;
+            card.track1.discretionary = 1000;
+            for (var i = 0; i < swiper.triggers.length; i++) {
+                $(swiper.triggers[i]).trigger(swiper.EVENT_NAME, card);
+            }
+        }
+        else if (e.keyCode === 13) {
             if ((Date.now() - swiper.swipeStart) < swiper.delay) {
                 var card = new swiper.Card(swiper.buffer.join(''));
                 for (var i = 0; i < swiper.triggers.length; i++) {

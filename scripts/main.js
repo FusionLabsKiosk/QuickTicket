@@ -141,6 +141,18 @@ function UpdateTickets() {
     });
     $('#page-showing .tickets-grand-total').html(FormatCurrency(totalPrice, true));
 }
+function CreateTicketSummary() {
+    var summary = $('<div/>').addClass('tickets');
+    var ticketTotal = 0;
+    var ticketQuantities = CurrentSession.receipt.getTicketsWithQuantity();
+    for (var i = 0; i < ticketQuantities.length; i++) {
+        CreateTicketDiv(ticketQuantities[i]).appendTo(summary);
+        ticketTotal += (ticketQuantities[i].price * ticketQuantities[i].quantity);
+    }
+    CreateTicketTotalDiv('----------').addClass('tickets-total-line').appendTo(summary);
+    CreateTicketTotalDiv(FormatCurrency(ticketTotal)).addClass('tickets-total').appendTo(summary);
+    return summary;
+}
 function CreateTicketDiv(ticket) {
     var quantity = typeof ticket.quantity === 'undefined' ? 1 : ticket.quantity;
     return $('<div/>').addClass('ticket')
@@ -301,7 +313,6 @@ function Prerequisite_Purchase() {
     //timeout to allow for page transitions
     setTimeout(function()
     {
-        
         var receipt = new Receipt(CurrentSession.showing);
         CurrentSession.receipt = receipt;
 
@@ -323,16 +334,8 @@ function Prerequisite_Purchase() {
             }
         });
 
-        $('#page-purchase .tickets').empty();
-        var ticketTotal = 0;
-        var ticketQuantities = receipt.getTicketsWithQuantity();
-        for (var i = 0; i < ticketQuantities.length; i++) {
-            CreateTicketDiv(ticketQuantities[i]).appendTo($('#page-purchase .tickets'));
-            ticketTotal += (ticketQuantities[i].price * ticketQuantities[i].quantity);
-        }
-        CreateTicketTotalDiv('----------').addClass('tickets-total-line').appendTo($('#page-purchase .tickets'));
-        CreateTicketTotalDiv(FormatCurrency(ticketTotal)).addClass('tickets-total').appendTo($('#page-purchase .tickets'));
-        
+        $('#page-purchase .tickets').replaceWith(CreateTicketSummary());
+        ShowPurchaseOption('none');
         setTimeout(function(){$('#page-purchase').trigger('prerequisiteComplete');}, SLIDE_ANIMATION);        
     }, SLIDE);
 }
@@ -342,8 +345,7 @@ function Prerequisite_Purchase_Results() {
         //Assume successful transaction
         $('#page-purchase-results .purchase-status').html('Purchase Successful');
         
-        $('#page-purchase-results .tickets').empty();
-        $('#page-purchase-results .tickets').append($('#page-purchase .tickets'));
+        $('#page-purchase-results .tickets').replaceWith(CreateTicketSummary());
         
         $('#page-purchase-results .payment-type').html(CurrentSession.receipt.paymentType);
         $('#page-purchase-results .payment-type-info').html(CurrentSession.receipt.paymentTypeInfo);

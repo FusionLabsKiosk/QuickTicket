@@ -195,7 +195,7 @@ function CreatePrintTickets(ticket) {
                                         '<div class="admission-data-item price"><span class="title">Price:</span><span class="ticket-price">' + FormatCurrency(ticket.price) + '</span></div>',
                                     '</div>',
                                     '<div class="cinema-data">',
-                                        '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + ticket.id + '</span></div>',
+                                        '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + CurrentSession.receipt.id + '</span></div>',
                                         '<div class="cinema-data-item issue"><span class="title">Issued:</span><span class="ticket-issue-data">' + todaysDate.getHours() + ':' + todaysDate.getMinutes() + ":" + todaysDate.getSeconds() + ' ' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
                                         '<div class="cinema-data-item issuer"><span class="title">By:</span><span class="ticket-issuer">Kiosk</span></div>',
                                     '</div>',
@@ -210,7 +210,7 @@ function CreatePrintTickets(ticket) {
                                     '<div class="movie"><span class="ticket-movie-title title">' + CurrentSession.showing.movie.title + '</span></div>',
                                     '<div class="admission">1 <span class="ticket-type">' + ticket.ticketType.name + '</span></div>',
                                     '<div class="cinema-data">',
-                                        '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + ticket.id + '</span></div>',
+                                        '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + CurrentSession.receipt.id + '</span></div>',
                                         '<div class="cinema-data-item issue"><span class="title">Issued:</span><span class="ticket-issue-data">' + todaysDate.getHours() + ':' + todaysDate.getMinutes() + ":" + todaysDate.getSeconds() + ' ' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
                                         '<div class="cinema-data-item issuer"><span class="title">By:</span><span class="ticket-issuer">Kiosk</span></div>',
                                     '</div>',
@@ -344,6 +344,8 @@ function Prerequisite_Purchase_Results() {
     //timeout to allow for page transitions
     setTimeout(function() {        
         //Assume successful transaction
+        spreadsheet.saveReceipt(CurrentSession.receipt.createStorageObject());
+        
         $('#page-purchase-results .purchase-status').html('Purchase Successful');
         
         $('#page-purchase-results .tickets').replaceWith(CreateTicketSummary());

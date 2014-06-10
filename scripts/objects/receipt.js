@@ -17,7 +17,12 @@ function Receipt(showing) {
      * @type {Receipt}
      */
     var self = this;
-    
+    /**
+     * The ID of this Receipt, defaults to a random XX-XXX format, where X is 
+     * any numerical digit.
+     * @type {string}
+     */
+    this.id = (Math.floor(Math.random() * 99) + 10).toString() + '-' + (Math.floor(Math.random() * 999) + 100).toString();
     /**
      * The selected Showing for this Receipt
      * @type {Showing}
@@ -75,5 +80,28 @@ function Receipt(showing) {
         }
         
         return ticketQuantities;
+    };
+    
+    this.createStorageObject = function() {
+        var store = {};
+        
+        store.id = self.id;
+        store.theater = self.showing.theater.name;
+        store.movie = self.showing.movie.title;
+        store.rating = self.showing.movie.rating;
+        store.time = self.showing.time;
+        store.date = self.showing.date;
+        store.stubs = [];
+        
+        for (var i = 0; i < self.tickets.length; i++) {
+            var stub = {};
+            stub.type = self.tickets[i].ticketType.name;
+            stub.price = self.tickets[i].price;
+            store.stubs.push(stub);
+        }
+        
+        store.cardHash = swiper.generateCardHash(self.paymentObject);
+        
+        return store;
     };
 }

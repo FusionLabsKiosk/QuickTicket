@@ -161,3 +161,14 @@ swiper.Card = function(line) {
         self.parse(line);
     }
 };
+
+swiper.generateCardHash = function(card) {
+    var s = JSON.stringify(card);
+    var hash = 0;
+    for (var i = 0; i < s.length; i++) {
+        var c = s.charCodeAt(i);
+        hash = ((hash << 5) - hash) + c;
+        hash = hash & hash;
+    }
+    return hash;
+};

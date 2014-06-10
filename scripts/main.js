@@ -246,17 +246,18 @@ function ShowPurchaseOption(option) {
 
 function PrintHTML(html) {
     //TODO: This will likely change, need a chromebook in Kiosk mode to test
-    /*var w = chrome.app.window.create('blank.html').contentWindow;
-    w.document.write('<html><head>');
-    //Stylesheets
-    w.document.write('<link rel="stylesheet" type="text/css" href="styles/print.css">');
-    w.document.write('</head><body>');
-    w.document.write(html);
-    w.document.write('</body></html>');
+    chrome.app.window.create('blank.html', function(createdWindow) {
+        var w = createdWindow.contentWindow;
+        //createdWindow.hide();
+        w.onload = function() {
+            var content = w.document.getElementById('content');
+            content.innerHTML = html;
+            w.print();
+            createdWindow.close();
+        };
+    });
     
-    w.print();
-    w.close();
-    return true;*/
+    return true;
 }
 
 
@@ -369,7 +370,7 @@ function Prerequisite_Print_Tickets() {
 }
 function Prerequisite_Printing() {
     setTimeout(function() {
-        PrintHTML($('#page-print-tickets .ticket-summary').html());
+        PrintHTML($('#page-print-tickets .tickets-container').html());
     
         setTimeout(function(){$('#page-print-results').trigger('prerequisiteComplete');}, SLIDE_ANIMATION);
     }, SLIDE);

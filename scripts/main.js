@@ -187,7 +187,7 @@ function CreatePrintTickets(ticket) {
                                     '<div class="movie"><span class="ticket-movie-title title">' + CurrentSession.showing.movie.title + '</span></div>',
                                     '<div class="rating"><span class="title">Rating:</span><span class="ticket-rating">' + CurrentSession.showing.movie.rating + '</span></div>',
                                     '<div class="time"><span class="title">Showing:</span><span class="ticket-time">' + CurrentSession.showing.time + '</span></div>',
-                                    '<div class="date"><span class="admission-date title">' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
+                                    '<div class="date"><span class="admission-date title">' + CurrentSession.showing.date + '</span></div>',
                                     '<div class="admission-data">',
                                         '<div class="admission-data-item admission"><span class="title">Admit:</span>1 <span class="ticket-type">' + ticket.ticketType.name + '</span></div>',
                                         '<div class="admission-data-item price"><span class="title">Price:</span><span class="ticket-price">' + FormatCurrency(ticket.price) + '</span></div>',
@@ -203,7 +203,7 @@ function CreatePrintTickets(ticket) {
                                 '<header></header>',
                                 '<div class="ticket-content">',
                                     '<div class="theater"><span class="title">Theater:</span><span class="theater-name">' + CurrentSession.showing.theater.name + '</span></div>',
-                                    '<div class="date"><span class="admission-date title">' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
+                                    '<div class="date"><span class="admission-date title">' + CurrentSession.showing.date + '</span></div>',
                                     '<div class="time"><span class="title">Showing:</span><span class="ticket-time">' + CurrentSession.showing.time + '</span></div>',
                                     '<div class="movie"><span class="ticket-movie-title title">' + CurrentSession.showing.movie.title + '</span></div>',
                                     '<div class="admission">1 <span class="ticket-type">' + ticket.ticketType.name + '</span></div>',
@@ -339,29 +339,19 @@ function Prerequisite_Print_Tickets() {
 function Prerequisite_Printing() {
     PrintHTML($('#page-print-tickets .tickets-container').html());
 }
+function Prerequisite_Search() {
+    $('#page-ticket-search .receipt-input').val('');
+    SetButtonStatus($('#page-ticket-search .retrieve'), ValidateConfirmationCodeFormat, '');
+}
 
 
 /*******************************************************************************
  * Misc Helper Functions 
  ******************************************************************************/
-function ValidateCardNumberFormat(validationString)
-{
-    if(validationString.length === 16)
-    {
-        if($.isNumeric(validationString))
-        {
-            return true;
-        }
-    }
-    return false;
-}
 function ValidateConfirmationCodeFormat(validationString)
 {
-    if(validationString.length === 9)
-    {
-        return true;
-    }
-    return false;
+    var regex = /^\d{2}-\d{3}$/;
+    return regex.test(validationString);
 }
 function FormatCurrency(value, hideSign)
 {
@@ -393,12 +383,13 @@ function AddListeners()
     $('#page-purchase').on(swiper.EVENT_NAME, Purchase_CardSwiped);
     swiper.addTrigger($('#page-purchase'));
     $('#page-purchase-results .print-tickets').click(PurchaseResults_PrintTickets_ClickHandler);
-    $('#page-ticket-search .enter-confirmation-code').click(TicketSearch_EnterConfirmationCode_ClickHandler);
-    $('#page-ticket-search .enter-credit-card').click(TicketSearch_EnterCreditCard_ClickHandler);
-    $('#page-ticket-search .credit-card-number').keyup(TicketSearch_CreditCardNumber_KeyUpHandler);
-    $('#page-ticket-search #credit-card-entry .retrieve-tickets').click(TicketSearch_CreditCard_RetrieveTickets_ClickHandler);
-    $('#page-ticket-search .confirmation-code').keyup(TicketSearch_ConfirmationCode_KeyUpHandler);
-    $('#page-ticket-search #confirmation-code-entry .retrieve-tickets').click(TicketSearch_ConfirmationCode_RetrieveTickets_ClickHandler);
+    
+    $('#page-ticket-search').on(slider.Event.BEFORE_OPEN, TicketSearch_BeforeOpen);
+    $('#page-ticket-search').on(slider.Event.AFTER_CLOSE, TicketSearch_AfterClose);
+    $('#page-ticket-search .receipt-input').keyup(TicketSearch_Receipt_KeyUpHandler);
+    $('#page-ticket-search .retrieve').click(TicketSearch_Retrieve_ClickHandler);
+    swiper.addTrigger($('#page-ticket-search'));
+    
     $('#page-print-tickets .print-tickets').click(PrintTickets_PrintTickets_ClickHandler);
     
     $('.return-main-menu').unbind('click').click(ReturnMainMenu_ClickHandler);
@@ -415,7 +406,7 @@ function Initial_PurchaseTickets_ClickHandler(e)
 }
 function Initial_PrintTickets_ClickHandler(e)
 {
-    slider.navigateTo('#page-ticket-search', slider.Direction.RIGHT);
+    slider.navigateTo('#page-ticket-search', slider.Direction.RIGHT, Prerequisite_Search);
     $('body > header').css('visibility', 'visible');
 }
 function Movies_ViewShowTimes_ClickHandler(e)
@@ -507,33 +498,57 @@ function PurchaseResults_PrintTickets_ClickHandler(e)
 {
     slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT, Prerequisite_Print_Tickets);
 }
-function TicketSearch_EnterConfirmationCode_ClickHandler(e)
-{
-    var page = $('#page-ticket-search');
-    OpenSection(page, $('#confirmation-code-entry', page));
+function TicketSearch_BeforeOpen(e) {
+    console.log('scanning');
+    swiper.scanning = true;
 }
-function TicketSearch_EnterCreditCard_ClickHandler(e)
-{
-    var page = $('#page-ticket-search');
-    OpenSection(page, $('#credit-card-entry', page));
+function TicketSearch_AfterClose(e) {
+    console.log('scanning stopped');
+    swiper.scanning = false;    
 }
-function TicketSearch_CreditCardNumber_KeyUpHandler(e)
+function TicketSearch_Receipt_KeyUpHandler(e)
 {
-    var button = $('#page-ticket-search #credit-card-entry .retrieve-tickets');
-    SetButtonStatus(button, ValidateCardNumberFormat, $(e.target).val());
-}
-function TicketSearch_CreditCard_RetrieveTickets_ClickHandler(e)
-{
-    slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT);
-}
-function TicketSearch_ConfirmationCode_KeyUpHandler(e)
-{
-    var button = $('#page-ticket-search #confirmation-code-entry .retrieve-tickets');
+    //TODO: Auto-detect valid format (XX-XXX) where X is digits, add dash
+    var button = $('#page-ticket-search .retrieve');
     SetButtonStatus(button, ValidateConfirmationCodeFormat, $(e.target).val());
 }
-function TicketSearch_ConfirmationCode_RetrieveTickets_ClickHandler(e)
+function TicketSearch_Retrieve_ClickHandler(e)
 {
-    slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT);
+    //TODO: Loading animation?
+    swiper.scanning = false;
+    var receiptId = $('#page-ticket-search .receipt-input').val();
+    spreadsheet.getReceiptById(receiptId, TicketSearch_Results);
+}
+function TicketSearch_Swiped(e, card) 
+{
+    //TODO: Loading animation?
+    swiper.scanning = false;
+    spreadsheet.getReceiptByCard(card, TicketSearch_Results);
+}
+function TicketSearch_Results(receiptStore) 
+{
+    if (receiptStore) {
+        CurrentSession.receipt.id = receiptStore.id;
+        CurrentSession.receipt.showing.theater.name = receiptStore.theater;
+        CurrentSession.receipt.showing.movie.title = receiptStore.movie;
+        CurrentSession.receipt.showing.movie.rating = receiptStore.rating;
+        CurrentSession.receipt.showing.time = receiptStore.time;
+        CurrentSession.receipt.showing.date = receiptStore.date;
+        for (var i = 0; i < receiptStore.stubs.length; i++) {
+            CurrentSession.receipt.tickets.push({
+                ticketType: {
+                    name: receiptStore.stubs[i].type
+                },
+                price: receiptStore.stubs[i].price
+            });
+        }
+        slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT, Prerequisite_Print_Tickets);
+    }
+    else {
+        //TODO: Alert invalid receipt ID/Card swipe
+        console.log('Invalid receipt ID or Card');
+        swiper.scanning = true;
+    }
 }
 function PrintTickets_PrintTickets_ClickHandler(e)
 {
@@ -582,18 +597,6 @@ function PrerequisiteComplete(e)
 }
 
 
-
-function OpenSection(page, section)
-{
-    CloseSections(page, section);;
-    section.slideDown();
-    section.addClass('open');
-    
-}
-function CloseSections(page, section)
-{
-    $('section.open', page).slideUp().removeClass('open');
-}
 
 function SetButtonStatus(button, validationFunction, validationString)
 {

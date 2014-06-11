@@ -20,5 +20,5 @@ function Session() {
      * The user's current Receipt
      * @type {Receipt}
      */
-    this.receipt = new Receipt(this);
+    this.receipt = new Receipt(this.showing);
 }

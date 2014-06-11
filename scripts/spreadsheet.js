@@ -1,7 +1,7 @@
 var spreadsheet = {};
 
-spreadsheet.MACRO_URL = 'https://script.google.com/macros/s/AKfycbxMuUnqGgxvQ-ftHW8avpqx8d5swfFVF03jzJxD8Onkxox7OdWg/exec';
-spreadsheet.SPREADSHEET_ID = '1gDKCGXiM4ZjHSrFWUmjhsJ6lTtG0b-a0WcI7aw-NXUc';
+spreadsheet.MACRO_URL = 'https://script.google.com/macros/s/AKfycbw4AvoXKYaURCkaCmjwi7zQO54GCP45YaNnGQ0d8slA0ZGxiEw/exec';
+spreadsheet.SPREADSHEET_ID = '1PSIXV-k_r0r53dVFIIqO72ZCCSXWNxa7-Ijl4Yjm0Fc';
 
 spreadsheet.saveReceipt = function(receipt) {
     var row = [

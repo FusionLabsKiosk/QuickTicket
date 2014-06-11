@@ -117,23 +117,20 @@ button:focus {
     height: 100%;
     position: relative;
 }
-#slide-container .slide {
-    left: 0;
-    top: 0;
-    width: 100%;
+#slide-container .slide .page {
+    overflow: hidden;
+}
+.slide {
+    display: inline-block;
     height: 100%;
     position: absolute;
-    
-    -webkit-transition: -webkit-transform 300ms linear, opacity 250ms linear;
+    width: 100%;
 }
-#slide-container .slide.slide-left {
-    -webkit-transform: translate(-100%, 0);
+.slide.left {
+    left: -100%;
 }
-#slide-container .slide.slide-right {
-    -webkit-transform: translate(100%, 0);
-}
-#slide-container .slide .page {
-    overflow: auto;
+.slide.right {
+    left: 100%;
 }
 
 /*******************************************************************************

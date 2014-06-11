@@ -6,8 +6,6 @@ var SlidePosition = {
 
 var TICKET_SLIDE = 200;
 var PURCHASE_SLIDE = 200;
-var SLIDE = 350;
-var SLIDE_ANIMATION = 750;
 
 var CurrentSession;
 
@@ -265,117 +263,81 @@ function PrintHTML(html) {
  * Prerequisite Functions (Must be called before page loads)
  ******************************************************************************/
 function Prerequisite_Movies() {
-    //timeout to allow for page transitions
-    setTimeout(function() {
-        $('#page-movies .movies-carousel').empty();
-        for (var i = 0; i < data.movies.length; i++) {
-            $('#page-movies .movies-carousel').append(data.movies[i].getCarouselDiv());
-        }
-        
-        //add listeners to view movie show times
-        $('#page-movies .movie').unbind('click').click(Movies_ViewShowTimes_ClickHandler);
-        
-        setTimeout(function(){$('#page-movies').trigger('prerequisiteComplete');}, SLIDE_ANIMATION);
-    }, SLIDE);
+    $('#page-movies .movies-carousel').empty();
+    for (var i = 0; i < data.movies.length; i++) {
+        $('#page-movies .movies-carousel').append(data.movies[i].getCarouselDiv());
+    }
+
+    //add listeners to view movie show times
+    $('#page-movies .movie').unbind('click').click(Movies_ViewShowTimes_ClickHandler);
 }
 function Prerequisite_Movie(movie) {
-    //timeout to allow for page transitions
-    setTimeout(function() {
-        movie.setMovieData($('#page-movie'));
-        
-        $('#page-movie .showings').empty();
-        var movieShowings = data.getShowingsByMovie(movie);
-        for (var i = 0; i < movieShowings.length; i++) {
-            $('#page-movie .showings').append(movieShowings[i].getShowingButton());
-        }
-        
-        //add listeners to view movie show times
-        $('#page-movie .showings').unbind('click').click(Movie_MovieShowing_ClickHandler);
-                
-        setTimeout(function(){$('#page-movie').trigger('prerequisiteComplete');}, SLIDE_ANIMATION);
-        
-    }, SLIDE);
+    movie.setMovieData($('#page-movie'));
+
+    $('#page-movie .showings').empty();
+    var movieShowings = data.getShowingsByMovie(movie);
+    for (var i = 0; i < movieShowings.length; i++) {
+        $('#page-movie .showings').append(movieShowings[i].getShowingButton());
+    }
+
+    //add listeners to view movie show times
+    $('#page-movie .showings').unbind('click').click(Movie_MovieShowing_ClickHandler);
 }
 function Prerequisite_Showing() {
-    //timeout to allow for page transitions
-    setTimeout(function() {
-        var pageShowing = $('#page-showing');
-        CurrentSession.showing.movie.setMovieData(pageShowing);
-        CurrentSession.showing.setShowingData(pageShowing);
-        CurrentSession.showing.theater.setTheaterData(pageShowing);
-        
-        AddTicket(true);
-        
-        setTimeout(function(){$('#page-showing').trigger('prerequisiteComplete');}, SLIDE_ANIMATION);
-        
-    }, SLIDE);
+    var pageShowing = $('#page-showing');
+    CurrentSession.showing.movie.setMovieData(pageShowing);
+    CurrentSession.showing.setShowingData(pageShowing);
+    CurrentSession.showing.theater.setTheaterData(pageShowing);
+
+    AddTicket(true);
 }
 function Prerequisite_Purchase() {
-    //timeout to allow for page transitions
-    setTimeout(function()
-    {
-        var receipt = new Receipt(CurrentSession.showing);
-        CurrentSession.receipt = receipt;
+    var receipt = new Receipt(CurrentSession.showing);
+    CurrentSession.receipt = receipt;
 
-        $.each($('#page-showing .showing-tickets .ticket'), function() {
-            var ticketForm = $(this);
-            var ticketType = $('.ticket-type option:selected', ticketForm).val();
-            var ticket;
-            var tickets = CurrentSession.showing.theater.pricing.tickets;
-            for (var i = 0; i < tickets.length; i++) {
-                if (tickets[i].ticketType.name === ticketType) {
-                    ticket = tickets[i];
-                    break;
-                }
+    $.each($('#page-showing .showing-tickets .ticket'), function() {
+        var ticketForm = $(this);
+        var ticketType = $('.ticket-type option:selected', ticketForm).val();
+        var ticket;
+        var tickets = CurrentSession.showing.theater.pricing.tickets;
+        for (var i = 0; i < tickets.length; i++) {
+            if (tickets[i].ticketType.name === ticketType) {
+                ticket = tickets[i];
+                break;
             }
-            var quantity = parseInt($('.ticket-quantity', ticketForm).html());
+        }
+        var quantity = parseInt($('.ticket-quantity', ticketForm).html());
 
-            for (var i = 0; i < quantity; i++) {
-                receipt.tickets.push(ticket);
-            }
-        });
+        for (var i = 0; i < quantity; i++) {
+            receipt.tickets.push(ticket);
+        }
+    });
 
-        $('#page-purchase .tickets').replaceWith(CreateTicketSummary());
-        ShowPurchaseOption('none');
-        setTimeout(function(){$('#page-purchase').trigger('prerequisiteComplete');}, SLIDE_ANIMATION);        
-    }, SLIDE);
+    $('#page-purchase .tickets').replaceWith(CreateTicketSummary());
+    ShowPurchaseOption('none');
 }
 function Prerequisite_Purchase_Results() {
-    //timeout to allow for page transitions
-    setTimeout(function() {        
-        //Assume successful transaction
-        spreadsheet.saveReceipt(CurrentSession.receipt.createStorageObject());
-        
-        $('#page-purchase-results .purchase-status').html('Purchase Successful');
-        
-        $('#page-purchase-results .tickets').replaceWith(CreateTicketSummary());
-        
-        $('#page-purchase-results .payment-type').html(CurrentSession.receipt.paymentType);
-        $('#page-purchase-results .payment-type-info').html(CurrentSession.receipt.paymentTypeInfo);
-        
-        setTimeout(function(){$('#page-purchase-results').trigger('prerequisiteComplete');}, SLIDE_ANIMATION);
-    }, SLIDE);
+    //Assume successful transaction
+    spreadsheet.saveReceipt(CurrentSession.receipt.createStorageObject());
+
+    $('#page-purchase-results .purchase-status').html('Purchase Successful');
+
+    $('#page-purchase-results .tickets').replaceWith(CreateTicketSummary());
+
+    $('#page-purchase-results .payment-type').html(CurrentSession.receipt.paymentType);
+    $('#page-purchase-results .payment-type-info').html(CurrentSession.receipt.paymentTypeInfo);
 }
-function Prerequisite_Print_Tickets() {    
-    //timeout to allow for page transitions
-    setTimeout(function() {
-        $('#page-print-tickets .tickets-container').empty();
-        var receipt = CurrentSession.receipt;
-        for (var i = 0; i < receipt.tickets.length; i++)
-        {
-            CreatePrintTickets(receipt.tickets[i]);
-            //.appendTo($('#page-print-tickets .tickets-container'));
-        }
-        
-        setTimeout(function(){$('#page-print-tickets').trigger('prerequisiteComplete');}, SLIDE_ANIMATION);
-    }, SLIDE);
+function Prerequisite_Print_Tickets() {  
+    $('#page-print-tickets .tickets-container').empty();
+    var receipt = CurrentSession.receipt;
+    for (var i = 0; i < receipt.tickets.length; i++)
+    {
+        CreatePrintTickets(receipt.tickets[i]);
+        //.appendTo($('#page-print-tickets .tickets-container'));
+    }
 }
 function Prerequisite_Printing() {
-    setTimeout(function() {
-        PrintHTML($('#page-print-tickets .tickets-container').html());
-    
-        setTimeout(function(){$('#page-print-results').trigger('prerequisiteComplete');}, SLIDE_ANIMATION);
-    }, SLIDE);
+    PrintHTML($('#page-print-tickets .tickets-container').html());
 }
 
 
@@ -422,7 +384,7 @@ function AddListeners()
 {
     $('#page-initial .purchase-tickets').click(Initial_PurchaseTickets_ClickHandler);
     $('#page-initial .print-tickets').click(Initial_PrintTickets_ClickHandler);
-    $('#page-movie').on('afterclose', Movie_AfterCloseHandler);
+    $('#page-movie').on(slider.Event.AFTER_CLOSE, Movie_AfterCloseHandler);
     $('#page-showing .purchase-tickets').click(Showing_PurchaseTickets_ClickHandler);
     $('#page-showing .add-tickets').click(Showing_AddTickets_ClickHandler);
     $('#page-purchase .payment-method-option.cash').click(Purchase_Cash_ClickHandler);
@@ -448,24 +410,24 @@ function AddListeners()
 //Event Handlers
 function Initial_PurchaseTickets_ClickHandler(e)
 {
-    NavigateTo('#page-movies', SlidePosition.RIGHT, Prerequisite_Movies);
+    slider.navigateTo('#page-movies', slider.Direction.RIGHT, Prerequisite_Movies);
     $('body > header').css('visibility', 'visible');
 }
 function Initial_PrintTickets_ClickHandler(e)
 {
-    NavigateTo('#page-ticket-search', SlidePosition.RIGHT);
+    slider.navigateTo('#page-ticket-search', slider.Direction.RIGHT);
     $('body > header').css('visibility', 'visible');
 }
 function Movies_ViewShowTimes_ClickHandler(e)
 {
     var movieID = $(e.target).closest('.movie').attr('data-id');
-    NavigateTo('#page-movie', SlidePosition.RIGHT, Prerequisite_Movie, data.getMovieByID(movieID));
+    slider.navigateTo('#page-movie', slider.Direction.RIGHT, Prerequisite_Movie, data.getMovieByID(movieID));
 }
 function Movie_MovieShowing_ClickHandler(e)
 {
     var showingID = $(e.target).closest('.showing').attr('data-id');
     CurrentSession.showing = data.getShowingByID(showingID);
-    NavigateTo('#page-showing', SlidePosition.RIGHT, Prerequisite_Showing);
+    slider.navigateTo('#page-showing', slider.Direction.RIGHT, Prerequisite_Showing);
 }
 function Movie_AfterCloseHandler(e)
 {
@@ -496,7 +458,7 @@ function Showing_TicketQuantityDecrease_ClickHandler(e)
 }
 function Showing_PurchaseTickets_ClickHandler(e)
 {
-    NavigateTo('#page-purchase', SlidePosition.RIGHT, Prerequisite_Purchase);
+    slider.navigateTo('#page-purchase', slider.Direction.RIGHT, Prerequisite_Purchase);
 }
 function Purchase_Cash_ClickHandler(e) 
 {
@@ -523,7 +485,7 @@ function Purchase_CashPurchase_ClickHandler(e)
     //Payment verification logic
     CurrentSession.receipt.paymentType = 'Cash';
     CurrentSession.receipt.paymentTypeInfo = 'Change Due: $0.00';
-    NavigateTo('#page-purchase-results', SlidePosition.RIGHT, Prerequisite_Purchase_Results);
+    slider.navigateTo('#page-purchase-results', slider.Direction.RIGHT, Prerequisite_Purchase_Results);
 }
 function Purchase_CardSwiped(e, card) 
 {
@@ -534,7 +496,7 @@ function Purchase_CardSwiped(e, card)
         
         swiper.scanning = false;
         
-        NavigateTo('#page-purchase-results', SlidePosition.RIGHT, Prerequisite_Purchase_Results);
+        slider.navigateTo('#page-purchase-results', slider.Direction.RIGHT, Prerequisite_Purchase_Results);
     }
     else {
         $('#page-purchase .purchase-option-form.card header').html('Invalid Card, Please Try Again');
@@ -543,7 +505,7 @@ function Purchase_CardSwiped(e, card)
 }
 function PurchaseResults_PrintTickets_ClickHandler(e)
 {
-    NavigateTo('#page-print-tickets', SlidePosition.RIGHT, Prerequisite_Print_Tickets);
+    slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT, Prerequisite_Print_Tickets);
 }
 function TicketSearch_EnterConfirmationCode_ClickHandler(e)
 {
@@ -562,7 +524,7 @@ function TicketSearch_CreditCardNumber_KeyUpHandler(e)
 }
 function TicketSearch_CreditCard_RetrieveTickets_ClickHandler(e)
 {
-    NavigateTo('#page-print-tickets', SlidePosition.RIGHT);
+    slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT);
 }
 function TicketSearch_ConfirmationCode_KeyUpHandler(e)
 {
@@ -571,11 +533,11 @@ function TicketSearch_ConfirmationCode_KeyUpHandler(e)
 }
 function TicketSearch_ConfirmationCode_RetrieveTickets_ClickHandler(e)
 {
-    NavigateTo('#page-print-tickets', SlidePosition.RIGHT);
+    slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT);
 }
 function PrintTickets_PrintTickets_ClickHandler(e)
 {
-    NavigateTo('#page-print-results', SlidePosition.RIGHT, Prerequisite_Printing);
+    slider.navigateTo('#page-print-results', slider.Direction.RIGHT, Prerequisite_Printing);
 }
 
 function ReturnMainMenu_ClickHandler(e)
@@ -597,19 +559,19 @@ function ReturnMainMenu_ClickHandler(e)
     var imageName = imageNumber + '.png';
     $('#page-initial .hero-image').attr('src', 'images/hero-images/' + imageName);
     
-    NavigateTo('#page-initial', SlidePosition.LEFT);
+    slider.navigateTo('#page-initial', slider.Direction.LEFT);
 }
 function ReturnMovies_ClickHandler(e)
 {
-    NavigateTo('#page-movies', SlidePosition.LEFT, Prerequisite_Movies);
+    slider.navigateTo('#page-movies', slider.Direction.LEFT, Prerequisite_Movies);
 }
 function ReturnMovie_ClickHandler(e)
 {
-    NavigateTo('#page-movie', SlidePosition.LEFT);
+    slider.navigateTo('#page-movie', slider.Direction.LEFT);
 }
 function ReturnShowing_ClickHandler(e)
 {
-    NavigateTo('#page-showing', SlidePosition.LEFT);
+    slider.navigateTo('#page-showing', slider.Direction.LEFT);
 }
 
 function PrerequisiteComplete(e)
@@ -645,10 +607,10 @@ function OpenPage(pageName, slidePosition)
     {
         targetPage.trigger('beforeopen');
 
-        var newSlideClass = (slidePosition === SlidePosition.LEFT) ? 'slide-left' : 'slide-right';
+        var newSlideClass = (slidePosition === slider.Direction.LEFT) ? 'slide-left' : 'slide-right';
         var newSlide = $('<div class="slide ' + newSlideClass + '"></div>');
 
-        var currentSlideClass = (slidePosition === SlidePosition.LEFT) ? 'slide-right' : 'slide-left';
+        var currentSlideClass = (slidePosition === slider.Direction.LEFT) ? 'slide-right' : 'slide-left';
         var currentSlide = $('.slide-center');
 
         newSlide.appendTo('#slide-container');

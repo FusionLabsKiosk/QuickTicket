@@ -3,8 +3,8 @@ var slider = {};
 slider.Event = {
     BEFORE_OPEN: 'before-open',
     AFTER_OPEN: 'after-open',
-    BEFORE_CLOSE: 'before-open',
-    AFTER_CLOSE: 'before-open'
+    BEFORE_CLOSE: 'before-close',
+    AFTER_CLOSE: 'after-close'
 };
 slider.Direction = {
     LEFT: 'left',

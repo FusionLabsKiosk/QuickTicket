@@ -17,7 +17,7 @@ function Init() {
     AddListeners();
     FormatPages();
     UpdateClock();
-    sandbox.initialize();
+    //sandbox.initialize();
     data.initializeData();
     ReturnMainMenu_ClickHandler();
 }

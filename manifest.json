@@ -21,7 +21,7 @@
     
     "sandbox": {
         "pages": [
-            "scripts/scripts_sandbox.html"
+            "scripts/sandbox-scripts.html"
         ]
     },
     "permissions": [

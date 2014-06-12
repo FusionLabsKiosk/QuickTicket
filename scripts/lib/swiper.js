@@ -149,7 +149,7 @@
                     self.track1.name = t1[3];
                     self.track1.nameParts = self.track1.name.split('/');
                     self.track1.exp = parseInt(t1[4]);
-                    self.track1.expYear = parseInt(t1[4].substring(0, 2));
+                    self.track1.expYear = parseInt('20' + t1[4].substring(0, 2));
                     self.track1.expMonth = parseInt(t1[4].substring(3));
                     self.track1.service = parseInt(t1[5]);
                     self.track1.discretionary = t1[6];
@@ -161,7 +161,7 @@
                     self.track2.valid = true;
                     self.track2.number = parseFloat(t2[1]);
                     self.track2.exp = parseInt(t2[2]);
-                    self.track2.expYear = parseInt(t2[2].substring(0, 2));
+                    self.track2.expYear = parseInt('20' + t2[2].substring(0, 2));
                     self.track2.expMonth = parseInt(t2[2].substring(3));
                     self.track2.service = parseInt(t2[3]);
                     self.track2.discretionary = t2[4];

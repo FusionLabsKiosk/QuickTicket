@@ -197,12 +197,27 @@
                     </footer>
               </div>
               <div class="page" id="page-ticket-search">  
-                    <header>Purchase Tickets</header>
                     <div class="content">
-                        <div class="search">
-                            <div class="instructions">Please swipe the credit card used to purchase your tickets, or enter your receipt ID below.</div>
-                            <input class="receipt-input" type="text" maxlength="6" placeholder="XX-XXX"/>
-                            <button class="retrieve" disabled>Retrieve Ticket(s)</button>
+                        <div class="search-container">
+                            <header>Purchase Tickets</header>
+                            <div class="options">
+                                <header>Select your method of ticket retrieval.</header>
+                                <div class="buttons">
+                                    <button class="receipt-button">Type In My Receipt ID</button>
+                                    <button class="card-button">Swipe my Credit Card</button>
+                                </div>
+                            </div>
+                            <div class="search-options">
+                                <div class="receipt option">
+                                    <div class="instructions">Use the on screen keyboard to type in your receipt ID.</div>
+                                    <input class="receipt-input" type="text" maxlength="6" placeholder="XX-XXX"/>
+                                    <button class="retrieve" disabled>Retrieve Ticket(s)</button>
+                                </div>
+                                <div class="card option">
+                                    <div class="instructions">Please swipe the credit card used to purchase your tickets. Your card will not be charged.</div>                                
+                                </div>
+                            </div>
+                            <div class="message"></div>
                         </div>
                     </div>
                     <footer>
@@ -213,7 +228,6 @@
                   <header class="float-group">
                       <span class="title">Print Tickets</span>
                       <div class="controls">
-                          <button class="cancel-print-tickets">Cancel</button>
                           <button class="print-tickets">Print Ticket(s)</button>
                       </div>
                   </header>

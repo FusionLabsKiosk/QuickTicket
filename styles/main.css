@@ -470,9 +470,11 @@ button:focus {
     width:100%;
 }
 
-/* page-purchase and page-purchase-results*/
+/* page-purchase, page-purchase-results, and page-ticket-search */
+/* TODO: Make these global classes for each page */
 #page-purchase .content,
-#page-purchase-results .content
+#page-purchase-results .content,
+#page-ticket-search .content
 {
     padding: 0;
     display:flex;
@@ -482,7 +484,8 @@ button:focus {
     font-size:1.5em;
 }
 #page-purchase .tickets-container,
-#page-purchase-results .tickets-container
+#page-purchase-results .tickets-container,
+#page-ticket-search .search-container
 {
     width:70%;
     margin:0 auto;
@@ -495,7 +498,9 @@ button:focus {
 #page-purchase .tickets-container>header,
 #page-purchase .payment-method-options-container>header,
 #page-purchase-results .tickets-container>header,
-#page-purchase-results .payment-method-options-container>header
+#page-purchase-results .payment-method-options-container>header,
+#page-ticket-search .search-container>header,
+#page-ticket-search .options>header
 {
     font-size:1.4em;
     margin-bottom:1em;
@@ -611,6 +616,8 @@ button:focus {
 #page-print-tickets .tickets-container
 {
     margin-bottom:1em;
+    overflow-x: hidden;
+    overflow-y: auto;
     font-size:1.5em;
 }
 
@@ -699,6 +706,33 @@ button:focus {
 {
     flex:1;
     text-align:center;
+}
+
+/* page-ticket-search */
+#page-ticket-search .options
+{
+    margin-bottom: 2em;
+}
+#page-ticket-search .buttons
+{
+    display: flex;
+}
+#page-ticket-search .buttons button
+{
+    flex: 1;
+    margin: 0 1em;
+}
+#page-ticket-search .search-options
+{
+    text-align: center;
+}
+#page-ticket-search .search-options .option
+{
+    display: none;
+    font-size: 1.3em;
+}
+#page-ticket-search .message {
+    margin-top: 1em;
 }
 
 /*******************************************************************************

@@ -4,9 +4,12 @@ swiper.TRACK_REGEX = /(%.*?\?)?(;.*?\?)?/;
 swiper.TRACK_1_REGEX = /%([A-Z])([0-9]{1,19})\^([^\^]{2,26})\^([0-9]{4}|\^)([0-9]{3}|\^)([^\?]+)\?/;
 swiper.TRACK_2_REGEX = /;([0-9]{1,19})=([0-9]{4}|=)([0-9]{3}|=)([^\?]+)\?/;
 
+swiper.DUMMY_CARD = '%B4242424242424242^DOE/JOHN^15011011000?;B4242424242424242=15011011000?';
+
 swiper.scanning = false;
 swiper.swipeStart = 0;
 swiper.triggers = [];
+swiper.focus;
 swiper.buffer = [];
 swiper.delay = 250;
 swiper.bypass = 96;
@@ -17,6 +20,12 @@ $(document).ready(function() {
 
 swiper.addTrigger = function(selector) {
     swiper.triggers.push(selector);
+};
+swiper.setFocus = function(selector) {
+    swiper.focus = selector;
+};
+swiper.removeFocus = function() {
+    swiper.focus = undefined;
 };
 
 swiper.swiped = function(e) {
@@ -33,26 +42,20 @@ swiper.swiped = function(e) {
         }
         
         if (e.keyCode === swiper.bypass) {
-            var card = new swiper.Card();
-            card.track1.valid = true;
-            card.track1.format = 'B';
-            card.track1.number = '4242424242424242';
-            card.track1.name = 'DOE/JOHN';
-            card.track1.nameParts = card.track1.name.split('/');
-            card.track1.exp = 0114;
-            card.track1.expYear = 14;
-            card.track1.expMonth = 1;
-            card.track1.service = 101;
-            card.track1.discretionary = 1000;
-            for (var i = 0; i < swiper.triggers.length; i++) {
-                $(swiper.triggers[i]).trigger(swiper.EVENT_NAME, card);
-            }
+            swiper.buffer = swiper.DUMMY_CARD.split('');
+            e.keyCode = 13;
         }
-        else if (e.keyCode === 13) {
+        
+        if (e.keyCode === 13) {
             if ((Date.now() - swiper.swipeStart) < swiper.delay) {
                 var card = new swiper.Card(swiper.buffer.join(''));
-                for (var i = 0; i < swiper.triggers.length; i++) {
-                    $(swiper.triggers[i]).trigger(swiper.EVENT_NAME, card);
+                if (swiper.focus) {
+                    $(swiper.focus).trigger(swiper.EVENT_NAME, card);
+                }
+                else {
+                    for (var i = 0; i < swiper.triggers.length; i++) {
+                        $(swiper.triggers[i]).trigger(swiper.EVENT_NAME, card);
+                    }
                 }
             }
             swiper.swipeStart = 0;
@@ -74,6 +77,7 @@ swiper.Card = function(line) {
     this.track2.valid = false;
     this.track3 = {};
     this.track3.valid = false;
+    this.line = line;
     
     this.isValid = function() {
         return self.track1.valid || self.track2.valid;
@@ -163,12 +167,14 @@ swiper.Card = function(line) {
 };
 
 swiper.generateCardHash = function(card) {
-    var s = JSON.stringify(card);
+    var s = card.line;
     var hash = 0;
     for (var i = 0; i < s.length; i++) {
         var c = s.charCodeAt(i);
         hash = ((hash << 5) - hash) + c;
         hash = hash & hash;
     }
+    //TODO: Make sure this hash is always the same, if not, use Stripe's fingerprint
+    console.log('Card Hash (x' + card.getLast4() + '): ' + hash);
     return hash;
 };

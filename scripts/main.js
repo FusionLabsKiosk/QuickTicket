@@ -6,6 +6,7 @@ var SlidePosition = {
 
 var TICKET_SLIDE = 200;
 var PURCHASE_SLIDE = 200;
+var SEARCH_SLIDE = 200;
 
 var CurrentSession;
 
@@ -194,7 +195,7 @@ function CreatePrintTickets(ticket) {
                                     '</div>',
                                     '<div class="cinema-data">',
                                         '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + CurrentSession.receipt.id + '</span></div>',
-                                        '<div class="cinema-data-item issue"><span class="title">Issued:</span><span class="ticket-issue-data">' + todaysDate.getHours() + ':' + todaysDate.getMinutes() + ":" + todaysDate.getSeconds() + ' ' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
+                                        '<div class="cinema-data-item issue"><span class="title">Issued:</span><span class="ticket-issue-data">' + todaysDate.getHours() + ':' + todaysDate.getMinutes() + ":" + todaysDate.getSeconds() + ' ' + todaysDate.getMonth()+1 + '/' + todaysDate.getDate() + '/' + todaysDate.getFullYear() + '</span></div>',
                                         '<div class="cinema-data-item issuer"><span class="title">By:</span><span class="ticket-issuer">Kiosk</span></div>',
                                     '</div>',
                                 '</div>',
@@ -209,7 +210,7 @@ function CreatePrintTickets(ticket) {
                                     '<div class="admission">1 <span class="ticket-type">' + ticket.ticketType.name + '</span></div>',
                                     '<div class="cinema-data">',
                                         '<div class="cinema-data-item id"><span class="title">ID:</span><span class="ticket-id">' + CurrentSession.receipt.id + '</span></div>',
-                                        '<div class="cinema-data-item issue"><span class="title">Issued:</span><span class="ticket-issue-data">' + todaysDate.getHours() + ':' + todaysDate.getMinutes() + ":" + todaysDate.getSeconds() + ' ' + todaysDate.getMonth() + '/' + todaysDate.getDay() + '/' + todaysDate.getFullYear() + '</span></div>',
+                                        '<div class="cinema-data-item issue"><span class="title">Issued:</span><span class="ticket-issue-data">' + todaysDate.getHours() + ':' + todaysDate.getMinutes() + ":" + todaysDate.getSeconds() + ' ' + todaysDate.getMonth()+1 + '/' + todaysDate.getDate() + '/' + todaysDate.getFullYear() + '</span></div>',
                                         '<div class="cinema-data-item issuer"><span class="title">By:</span><span class="ticket-issuer">Kiosk</span></div>',
                                     '</div>',
                                 '</div>',
@@ -232,12 +233,20 @@ function CreatePrintTickets(ticket) {
 function ShowPurchaseOption(option) {
     $.each($('#page-purchase .purchase-option-forms .purchase-option-form'), function() {
         if ($(this).hasClass(option)) {
-            if (!$(this).is(':visible')) {
-                $(this).show(PURCHASE_SLIDE);
-            }
+            $(this).show(PURCHASE_SLIDE);
         }
         else if ($(this).is(':visible')) {
             $(this).hide(PURCHASE_SLIDE);
+        }
+    });
+}
+function ShowSearchOption(option) {
+    $.each($('#page-ticket-search .search-options .option'), function() {
+        if ($(this).hasClass(option)) {
+            $(this).show(SEARCH_SLIDE);
+        }
+        else if ($(this).is(':visible')) {
+            $(this).hide(SEARCH_SLIDE);
         }
     });
 }
@@ -342,7 +351,6 @@ function Prerequisite_Printing() {
 function Prerequisite_Search() {
     $('#page-ticket-search .receipt-input').val('');
     SetButtonStatus($('#page-ticket-search .retrieve'), ValidateConfirmationCodeFormat, '');
-    console.log('prereq done');
 }
 
 
@@ -375,18 +383,6 @@ function AddListeners()
 {
     $('#page-initial .purchase-tickets').click(Initial_PurchaseTickets_ClickHandler);
     $('#page-initial .print-tickets').click(Initial_PrintTickets_ClickHandler);
-    $('#page-movie').on(slider.Event.BEFORE_OPEN, function() {
-        console.log('movie before open');
-    });
-    $('#page-movie').on(slider.Event.AFTER_OPEN, function() {
-        console.log('movie after open');
-    });
-    $('#page-movie').on(slider.Event.BEFORE_CLOSE, function() {
-        console.log('movie before close');
-    });
-    $('#page-movie').on(slider.Event.AFTER_CLOSE, function() {
-        console.log('movie after close');
-    });
     $('#page-movie').on(slider.Event.AFTER_CLOSE, Movie_AfterCloseHandler);
     $('#page-showing .purchase-tickets').click(Showing_PurchaseTickets_ClickHandler);
     $('#page-showing .add-tickets').click(Showing_AddTickets_ClickHandler);
@@ -399,9 +395,11 @@ function AddListeners()
     
     $('#page-ticket-search').on(slider.Event.BEFORE_OPEN, TicketSearch_BeforeOpen);
     $('#page-ticket-search').on(slider.Event.AFTER_CLOSE, TicketSearch_AfterClose);
+    $('#page-ticket-search').on(swiper.EVENT_NAME, TicketSearch_Swiped);
+    $('#page-ticket-search .receipt-button').click(TicketSearch_ReceiptOption);
+    $('#page-ticket-search .card-button').click(TicketSearch_CardOption);
     $('#page-ticket-search .receipt-input').keyup(TicketSearch_Receipt_KeyUpHandler);
     $('#page-ticket-search .retrieve').click(TicketSearch_Retrieve_ClickHandler);
-    swiper.addTrigger($('#page-ticket-search'));
     
     $('#page-print-tickets .print-tickets').click(PrintTickets_PrintTickets_ClickHandler);
     
@@ -512,12 +510,23 @@ function PurchaseResults_PrintTickets_ClickHandler(e)
     slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT, Prerequisite_Print_Tickets);
 }
 function TicketSearch_BeforeOpen(e) {
-    console.log('scanning beforeopen');
-    swiper.scanning = true;
+    $('#page-ticket-search .message').html('');
+    ShowSearchOption('none');
 }
 function TicketSearch_AfterClose(e) {
-    console.log('scanning stopped');
     swiper.scanning = false;    
+    swiper.removeFocus();
+}
+function TicketSearch_ReceiptOption(e) {
+    swiper.scanning = false;
+    $('#page-ticket-search .message').html('');
+    ShowSearchOption('receipt');
+}
+function TicketSearch_CardOption(e) {
+    swiper.scanning = true;
+    swiper.setFocus($('#page-ticket-search'));
+    $('#page-ticket-search .message').html('');
+    ShowSearchOption('card');
 }
 function TicketSearch_Receipt_KeyUpHandler(e)
 {
@@ -528,15 +537,31 @@ function TicketSearch_Receipt_KeyUpHandler(e)
 function TicketSearch_Retrieve_ClickHandler(e)
 {
     //TODO: Loading animation?
-    swiper.scanning = false;
+    $('#page-ticket-search .message').html('Searching...');
     var receiptId = $('#page-ticket-search .receipt-input').val();
-    spreadsheet.getReceiptById(receiptId, TicketSearch_Results);
+    spreadsheet.getReceiptById(receiptId, function(receiptStore) {
+        if (receiptStore) {
+            TicketSearch_Results(receiptStore);
+        }
+        else {
+            $('#page-ticket-search .message').html('Invalid receipt ID');
+        }
+    });
 }
 function TicketSearch_Swiped(e, card) 
 {
-    //TODO: Loading animation?
     swiper.scanning = false;
-    spreadsheet.getReceiptByCard(card, TicketSearch_Results);
+    //TODO: Loading animation?
+    $('#page-ticket-search .message').html('Searching...');
+    spreadsheet.getReceiptByCard(card, function(receiptStore) {
+        if (receiptStore) {
+            TicketSearch_Results(receiptStore);
+        }
+        else {
+            $('#page-ticket-search .message').html('Invalid card, please try again');
+            swiper.scanning = true;
+        }
+    });
 }
 function TicketSearch_Results(receiptStore) 
 {
@@ -556,11 +581,6 @@ function TicketSearch_Results(receiptStore)
             });
         }
         slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT, Prerequisite_Print_Tickets);
-    }
-    else {
-        //TODO: Alert invalid receipt ID/Card swipe
-        console.log('Invalid receipt ID or Card');
-        swiper.scanning = true;
     }
 }
 function PrintTickets_PrintTickets_ClickHandler(e)

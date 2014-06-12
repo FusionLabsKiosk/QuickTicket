@@ -334,7 +334,7 @@ function Prerequisite_Purchase() {
 }
 function Prerequisite_Purchase_Results() {
     //Assume successful transaction
-    CurrentSession.receipt.saveToSpreadsheet();
+    data.saveReceipt(CurrentSession.receipt.createStorageObject());
 
     $('#page-purchase-results .purchase-status').html('Purchase Successful');
 
@@ -499,17 +499,27 @@ function Purchase_CashPurchase_ClickHandler(e)
 function Purchase_CardSwiped(e, card) 
 {
     if (card.isValid()) {
-        //TODO: After checking valid swipe, send card info to payment processing
-        CurrentSession.receipt.paymentObject = card;
-        CurrentSession.receipt.paymentTypeInfo = 'Card Charged: xxxx-xxxx-xxxx-' + card.getLast4();
-        
         swiper.scanning = false;
-        
-        slider.navigateTo('#page-purchase-results', slider.Direction.RIGHT, Prerequisite_Purchase_Results);
+        var amount = FormatDecimalFromCurrency($('#page-purchase .tickets-total .ticket-price').html());
+        stripe.chargeCard(card, amount, function(response) {
+            if (response.success) {
+                CurrentSession.receipt.paymentObject = card;
+                CurrentSession.receipt.paymentTypeInfo = 'Card Charged: xxxx-xxxx-xxxx-' + card.getLast4();
+
+                slider.navigateTo('#page-purchase-results', slider.Direction.RIGHT, Prerequisite_Purchase_Results);
+            }
+            else {
+                var message = 'There was a problem charging your card: ' + response.message;
+                $('#page-purchase .purchase-option-form.card header').html(message);
+                $('#page-purchase .purchase-option-form.gift header').html(message);
+            }
+        });
     }
     else {
-        $('#page-purchase .purchase-option-form.card header').html('Invalid Card, Please Try Again');
-        $('#page-purchase .purchase-option-form.gift header').html('Invalid Card, Please Try Again');
+        swiper.scanning = true;
+        var message = 'There was a problem reading your card, please try again'
+        $('#page-purchase .purchase-option-form.card header').html(message);
+        $('#page-purchase .purchase-option-form.gift header').html(message);
     }
 }
 function PurchaseResults_PrintTickets_ClickHandler(e)

@@ -140,7 +140,7 @@ data.saveReceipt = function(receipt) {
         JSON.stringify(receipt)
     ];
     spreadsheet.appendRow(row, function(message, status) {
-        console.log('(' + status + ') ' + message);
+        console.log('Receipt Save Result: (' + status + ') ' + message);
     });
 };
 data.getReceiptByProperty = function(property, value, callback) {

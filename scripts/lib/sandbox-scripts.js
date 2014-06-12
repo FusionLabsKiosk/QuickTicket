@@ -35,7 +35,7 @@
         }
         else if (e.data.script) {
             if (!e.data.source) {
-                e.data.source = 'Unknown' + Math.floor((Math.random() * 999) + 100);
+                e.data.source = 'Unknown' + Math.floor((Math.random() * 899) + 100);
             }
             
             var script = window[e.data.script];

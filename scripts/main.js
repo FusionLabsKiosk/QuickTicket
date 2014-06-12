@@ -15,11 +15,18 @@ $(document).ready(Init);
 function Init() {
     CurrentSession = new Session();
     AddListeners();
+    InitSlider();
     FormatPages();
     UpdateClock();
-    //sandbox.initialize();
     data.initializeData();
     ReturnMainMenu_ClickHandler();
+}
+function InitSlider() {
+    slider.processing = '#page-processing';
+    slider.storage = '#pages';
+    slider.navigateTo = function(page, direction, beforeOpen, param) {
+        slider.slide('#slide-container', page, direction, beforeOpen, param);
+    };
 }
 function FormatPages() {
     var slideContainerHeight = $('body').outerHeight() - $('body>header').outerHeight();

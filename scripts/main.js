@@ -396,13 +396,13 @@ function AddListeners()
     $('#page-purchase .payment-method-option.cash').click(Purchase_Cash_ClickHandler);
     $('#page-purchase .payment-method-option.card').click(Purchase_Card_ClickHandler);
     $('#page-purchase .payment-method-option.gift').click(Purchase_Gift_ClickHandler);
-    $('#page-purchase').on(swiper.EVENT_NAME, Purchase_CardSwiped);
+    $('#page-purchase').on(swiper.EVENT, Purchase_CardSwiped);
     swiper.addTrigger($('#page-purchase'));
     $('#page-purchase-results .print-tickets').click(PurchaseResults_PrintTickets_ClickHandler);
     
     $('#page-ticket-search').on(slider.Event.BEFORE_OPEN, TicketSearch_BeforeOpen);
     $('#page-ticket-search').on(slider.Event.AFTER_CLOSE, TicketSearch_AfterClose);
-    $('#page-ticket-search').on(swiper.EVENT_NAME, TicketSearch_Swiped);
+    $('#page-ticket-search').on(swiper.EVENT, TicketSearch_Swiped);
     $('#page-ticket-search .receipt-button').click(TicketSearch_ReceiptOption);
     $('#page-ticket-search .card-button').click(TicketSearch_CardOption);
     $('#page-ticket-search .receipt-input').keyup(TicketSearch_Receipt_KeyUpHandler);

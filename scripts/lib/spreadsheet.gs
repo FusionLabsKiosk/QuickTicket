@@ -1,3 +1,12 @@
+//This script should be registered on a Google account at 
+//https://script.google.com/
+//After creating a new project and deploying the script as a web app, 
+//retrieve the web app URL and set it as spreadsheet.MACRO_URL in the 
+//spreadsheet.js library.
+//You will need to exectue the app as "me" and allow "Anyone, even anonymous" 
+//access to the app. Additionally, you will need to run it once in the browser 
+//to authorize the app access to your Google Drive spreadsheets.
+
 function doGet(event) {
   var response = {};
   response.message = '';

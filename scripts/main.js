@@ -334,7 +334,7 @@ function Prerequisite_Purchase() {
 }
 function Prerequisite_Purchase_Results() {
     //Assume successful transaction
-    spreadsheet.saveReceipt(CurrentSession.receipt.createStorageObject());
+    CurrentSession.receipt.saveToSpreadsheet();
 
     $('#page-purchase-results .purchase-status').html('Purchase Successful');
 
@@ -546,7 +546,7 @@ function TicketSearch_Retrieve_ClickHandler(e)
     //TODO: Loading animation?
     $('#page-ticket-search .message').html('Searching...');
     var receiptId = $('#page-ticket-search .receipt-input').val();
-    spreadsheet.getReceiptById(receiptId, function(receiptStore) {
+    data.getReceiptById(receiptId, function(receiptStore) {
         if (receiptStore) {
             TicketSearch_Results(receiptStore);
         }
@@ -560,7 +560,7 @@ function TicketSearch_Swiped(e, card)
     swiper.scanning = false;
     //TODO: Loading animation?
     $('#page-ticket-search .message').html('Searching...');
-    spreadsheet.getReceiptByCard(card, function(receiptStore) {
+    data.getReceiptByCard(card, function(receiptStore) {
         if (receiptStore) {
             TicketSearch_Results(receiptStore);
         }

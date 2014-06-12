@@ -4,6 +4,7 @@ var data = {};
 //Static Global Data Variables
 data.CINEMA_NAME = 'I/0 Cinema 10';
 data.MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+data.SPREADSHEET_ID = '1PSIXV-k_r0r53dVFIIqO72ZCCSXWNxa7-Ijl4Yjm0Fc';
 
 data.ticketTypes = [];
 data.pricings = [];
@@ -16,6 +17,7 @@ data.initializeData = function() {
     rotten.getInTheatersData(function() {
         data.generateShowtimes();
     });
+    spreadsheet.defaultSpreadsheetId = data.SPREADSHEET_ID;
 };
 
 data.generateShowtimes = function() {
@@ -130,4 +132,34 @@ data.getArrayByProperty = function(array, property, value) {
         }
     }
     return results;
+};
+
+
+data.saveReceipt = function(receipt) {
+    var row = [
+        JSON.stringify(receipt)
+    ];
+    spreadsheet.appendRow(row, function(message, status) {
+        console.log('(' + status + ') ' + message);
+    });
+};
+data.getReceiptByProperty = function(property, value, callback) {
+    spreadsheet.getAllRows(function(rows) {
+        rows.reverse();
+        for (var i = 0; i < rows.length; i++) {
+            var receipt = JSON.parse(rows[i]);
+            if (receipt[property] === value) {
+                callback(receipt);
+                return;
+            }
+        }
+        callback();
+    });
+};
+data.getReceiptById = function(id, callback) {
+    data.getReceiptByProperty('id', id, callback);
+};
+data.getReceiptByCard = function(card, callback) {
+    var hash = swiper.generateCardHash(card);
+    data.getReceiptByProperty('cardHash', hash, callback);
 };

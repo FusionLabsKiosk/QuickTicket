@@ -342,6 +342,7 @@ function Prerequisite_Printing() {
 function Prerequisite_Search() {
     $('#page-ticket-search .receipt-input').val('');
     SetButtonStatus($('#page-ticket-search .retrieve'), ValidateConfirmationCodeFormat, '');
+    console.log('prereq done');
 }
 
 
@@ -374,6 +375,18 @@ function AddListeners()
 {
     $('#page-initial .purchase-tickets').click(Initial_PurchaseTickets_ClickHandler);
     $('#page-initial .print-tickets').click(Initial_PrintTickets_ClickHandler);
+    $('#page-movie').on(slider.Event.BEFORE_OPEN, function() {
+        console.log('movie before open');
+    });
+    $('#page-movie').on(slider.Event.AFTER_OPEN, function() {
+        console.log('movie after open');
+    });
+    $('#page-movie').on(slider.Event.BEFORE_CLOSE, function() {
+        console.log('movie before close');
+    });
+    $('#page-movie').on(slider.Event.AFTER_CLOSE, function() {
+        console.log('movie after close');
+    });
     $('#page-movie').on(slider.Event.AFTER_CLOSE, Movie_AfterCloseHandler);
     $('#page-showing .purchase-tickets').click(Showing_PurchaseTickets_ClickHandler);
     $('#page-showing .add-tickets').click(Showing_AddTickets_ClickHandler);
@@ -499,7 +512,7 @@ function PurchaseResults_PrintTickets_ClickHandler(e)
     slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT, Prerequisite_Print_Tickets);
 }
 function TicketSearch_BeforeOpen(e) {
-    console.log('scanning');
+    console.log('scanning beforeopen');
     swiper.scanning = true;
 }
 function TicketSearch_AfterClose(e) {

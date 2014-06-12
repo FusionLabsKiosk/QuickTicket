@@ -48,7 +48,7 @@
                     <img class="hero-image" src="images/hero-images/001.png" />
                     <div class="initial-buttons">
                         <button class="purchase-tickets"><img class="icon" src="images/purchaseTicketsIcon.png" /><span class="description">Purchase Tickets</span></button>
-                        <button class="print-tickets" disabled><img class="icon" src="images/printTicketsIcon.png" /><span class="description">Print Tickets</span></button>
+                        <button class="print-tickets"><img class="icon" src="images/printTicketsIcon.png" /><span class="description">Print Tickets</span></button>
                     </div>
               </div>
               <div class="page" id="page-movies">
@@ -196,38 +196,15 @@
                         <button class="return-main-menu">Back to Main Menu</button>
                     </footer>
               </div>
-              <div class="page" id="page-ticket-search">                  
-                    <div id="search-options" class="options">
-                        <div class="instructions">
-                            <p>Select a method for retrieving your show tickets.</p>
+              <div class="page" id="page-ticket-search">  
+                    <header>Purchase Tickets</header>
+                    <div class="content">
+                        <div class="search">
+                            <div class="instructions">Please swipe the credit card used to purchase your tickets, or enter your receipt ID below.</div>
+                            <input class="receipt-input" type="text" maxlength="6" placeholder="XX-XXX"/>
+                            <button class="retrieve" disabled>Retrieve Ticket(s)</button>
                         </div>
-                        <button class="enter-confirmation-code option">Enter Confirmation Code</button>
-                        <button class="enter-credit-card option">Enter Credit Card Information</button>
                     </div>
-                    <section id="credit-card-entry">
-                        <div class="instructions">
-                            <p>Enter your credit card number for the card you used to purchase your tickets below. Your card will <em>NOT</em> be charged. The credit card information will be used to retrieve your tickets.</p>
-                        </div>
-                        <div class="form">
-                            <div class="form-control-group">
-                                <div class="control-title">Credit Card <span class="formatted-card-number"></span></div>
-                                <input class="credit-card-number" type="text" maxlength="16" />
-                            </div>
-                            <button class="retrieve-tickets" disabled>Retrieve Ticket(s)</button>
-                        </div>
-                    </section>
-                    <section id="confirmation-code-entry">
-                        <div class="instructions">
-                            <p>Enter your confirmation number below. This can be found on your account profile, online.</p>
-                        </div>
-                        <div class="form">
-                            <div class="form-control-group">
-                                <div class="control-title">Credit Card <span class="formatted-confirmation-number"></span></div>
-                                <input class="confirmation-code" type="text" maxlength="9" />
-                            </div>
-                            <button class="retrieve-tickets" disabled>Retrieve Ticket(s)</button>
-                        </div>
-                    </section>
                     <footer>
                         <button class="return-main-menu">Back to Main Menu</button>
                     </footer>

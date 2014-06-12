@@ -293,11 +293,10 @@ function Prerequisite_Movie(movie) {
     $('#page-movie .showings').empty();
     var movieShowings = data.getShowingsByMovie(movie);
     for (var i = 0; i < movieShowings.length; i++) {
-        $('#page-movie .showings').append(movieShowings[i].getShowingButton());
+        var button = movieShowings[i].getShowingButton();
+        button.click(Movie_MovieShowing_ClickHandler);
+        $('#page-movie .showings').append(button);
     }
-
-    //add listeners to view movie show times
-    $('#page-movie .showings').unbind('click').click(Movie_MovieShowing_ClickHandler);
 }
 function Prerequisite_Showing() {
     var pageShowing = $('#page-showing');

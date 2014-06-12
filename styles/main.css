@@ -115,22 +115,9 @@ button:focus {
 #slide-container {
     width: 100%;
     height: 100%;
-    position: relative;
 }
 #slide-container .slide .page {
     overflow: hidden;
-}
-.slide {
-    display: inline-block;
-    height: 100%;
-    position: absolute;
-    width: 100%;
-}
-.slide.left {
-    left: -100%;
-}
-.slide.right {
-    left: 100%;
 }
 
 /*******************************************************************************

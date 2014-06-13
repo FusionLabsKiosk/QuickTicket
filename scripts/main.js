@@ -424,6 +424,8 @@ function AddListeners()
     
     $('#page-print-tickets .print-tickets').click(PrintTickets_PrintTickets_ClickHandler);
     
+    $('#page-print-results').on(slider.Event.AFTER_OPEN, PrintResults_AfterOpen);
+    
     $('.return-main-menu').unbind('click').click(ReturnMainMenu_ClickHandler);
     $('.return-movies').unbind('click').click(ReturnMovies_ClickHandler);
     $('.return-movie').unbind('click').click(ReturnMovie_ClickHandler);
@@ -639,6 +641,10 @@ function TicketSearch_Message(message) {
 function PrintTickets_PrintTickets_ClickHandler(e)
 {
     slider.navigateTo('#page-print-results', slider.Direction.RIGHT, Prerequisite_Printing);
+}
+function PrintResults_AfterOpen(e) 
+{
+    setTimeout(ReturnMainMenu_ClickHandler, 5000);
 }
 
 function ReturnMainMenu_ClickHandler(e)

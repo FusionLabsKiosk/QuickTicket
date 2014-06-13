@@ -22,7 +22,7 @@ function Receipt(showing) {
      * any numerical digit.
      * @type {string}
      */
-    this.id = (Math.floor(Math.random() * 99) + 10).toString() + '-' + (Math.floor(Math.random() * 999) + 100).toString();
+    this.id = (Math.floor(Math.random() * 89) + 10).toString() + '-' + (Math.floor(Math.random() * 899) + 100).toString();
     /**
      * The selected Showing for this Receipt
      * @type {Showing}

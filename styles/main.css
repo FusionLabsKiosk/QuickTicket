@@ -100,9 +100,9 @@ button:active {
 }
 button:disabled {
     background-image: none;
-    background-color: #444;
-    border-color: #333;
-    text-shadow: 2px 1px #222; 
+    background-color: #999;
+    border-color: #666;
+    text-shadow: 2px 1px #666; 
     color: #555;
 }
 button:focus {

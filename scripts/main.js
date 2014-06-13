@@ -4,9 +4,7 @@ var SlidePosition = {
     RIGHT : "right"
 };
 
-var TICKET_SLIDE = 200;
-var PURCHASE_SLIDE = 200;
-var SEARCH_SLIDE = 200;
+var SECTION_ANIMATION = 200;
 
 var CurrentSession;
 
@@ -100,10 +98,10 @@ function AddTicket(clearExisting) {
     
     UpdateTickets();
     
-    $('#page-showing .ticket[data-id="' + ticketID + '"]').show(TICKET_SLIDE);
+    $('#page-showing .ticket[data-id="' + ticketID + '"]').show(SECTION_ANIMATION);
 }
 function RemoveTicket(ticketID) {
-    $('#page-showing .showing-tickets .ticket[data-id="' + ticketID + '"]').hide(TICKET_SLIDE, function(){
+    $('#page-showing .showing-tickets .ticket[data-id="' + ticketID + '"]').hide(SECTION_ANIMATION, function(){
         $(this).remove();
         UpdateTickets();
     });
@@ -242,29 +240,44 @@ function CreatePrintTickets(ticket) {
 function ShowPurchaseOption(option) {
     $.each($('#page-purchase .purchase-option-forms .purchase-option-form'), function() {
         if ($(this).hasClass(option)) {
-            $(this).show(PURCHASE_SLIDE);
+            $(this).show(SECTION_ANIMATION);
         }
         else if ($(this).is(':visible')) {
-            $(this).hide(PURCHASE_SLIDE);
+            $(this).hide(SECTION_ANIMATION);
         }
     });
 }
 function ShowSearchOption(option) {
     $.each($('#page-ticket-search .search-options .option'), function() {
         if ($(this).hasClass(option)) {
-            $(this).show(SEARCH_SLIDE);
+            $(this).show(SECTION_ANIMATION);
         }
         else if ($(this).is(':visible')) {
-            $(this).hide(SEARCH_SLIDE);
+            $(this).hide(SECTION_ANIMATION);
         }
     });
 }
 
 function PrintHTML(html) {
-    //TODO: This will likely change, need a chromebook in Kiosk mode to test
+    /*
+     * When printing from a Chrome Box, you must use Google Cloud printing, 
+     * since you cannot print to a local computer. Google for Business allows 
+     * the setup of a managed kiosk device with cloud printing, but for 
+     * demo purposes, this print function will cause a window print prompt 
+     * to display to the user.
+     * 
+     * In a real world scenario, this kiosk app would be deployed on a 
+     * managed kiosk device with silent printing set up. To avoid the 
+     * print prompt, this section of code is commented out.
+     */
+    
+    /*
     chrome.app.window.create('blank.html', function(createdWindow) {
+        //blank.html is an empty file that the provided HTML to print can 
+        //be appended to. The blank.html file also links to the print.css 
+        //style, where you can specify print-related styling
         var w = createdWindow.contentWindow;
-        //createdWindow.hide();
+        createdWindow.hide();
         w.onload = function() {
             var content = w.document.getElementById('content');
             content.innerHTML = html;
@@ -272,8 +285,7 @@ function PrintHTML(html) {
             createdWindow.close();
         };
     });
-    
-    return true;
+    */
 }
 
 
@@ -359,6 +371,8 @@ function Prerequisite_Printing() {
 function Prerequisite_Search() {
     $('#page-ticket-search .receipt-input').val('');
     SetButtonStatus($('#page-ticket-search .retrieve'), ValidateConfirmationCodeFormat, '');
+    TicketSearch_Message();
+    ShowSearchOption('none');
 }
 
 
@@ -401,7 +415,6 @@ function AddListeners()
     swiper.addTrigger($('#page-purchase'));
     $('#page-purchase-results .print-tickets').click(PurchaseResults_PrintTickets_ClickHandler);
     
-    $('#page-ticket-search').on(slider.Event.BEFORE_OPEN, TicketSearch_BeforeOpen);
     $('#page-ticket-search').on(slider.Event.AFTER_CLOSE, TicketSearch_AfterClose);
     $('#page-ticket-search').on(swiper.EVENT, TicketSearch_Swiped);
     $('#page-ticket-search .receipt-button').click(TicketSearch_ReceiptOption);
@@ -518,7 +531,7 @@ function Purchase_CardSwiped(e, card)
     }
     else {
         swiper.scanning = true;
-        var message = 'There was a problem reading your card, please try again'
+        var message = 'There was a problem reading your card, please try again';
         $('#page-purchase .purchase-option-form.card header').html(message);
         $('#page-purchase .purchase-option-form.gift header').html(message);
     }
@@ -527,59 +540,72 @@ function PurchaseResults_PrintTickets_ClickHandler(e)
 {
     slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT, Prerequisite_Print_Tickets);
 }
-function TicketSearch_BeforeOpen(e) {
-    $('#page-ticket-search .message').html('');
-    ShowSearchOption('none');
-}
 function TicketSearch_AfterClose(e) {
     swiper.scanning = false;    
     swiper.removeFocus();
 }
 function TicketSearch_ReceiptOption(e) {
     swiper.scanning = false;
-    $('#page-ticket-search .message').html('');
+    TicketSearch_Message();
     ShowSearchOption('receipt');
 }
 function TicketSearch_CardOption(e) {
     swiper.scanning = true;
     swiper.setFocus($('#page-ticket-search'));
-    $('#page-ticket-search .message').html('');
+    TicketSearch_Message();
     ShowSearchOption('card');
 }
 function TicketSearch_Receipt_KeyUpHandler(e)
 {
-    //TODO: Auto-detect valid format (XX-XXX) where X is digits, add dash
     var button = $('#page-ticket-search .retrieve');
-    SetButtonStatus(button, ValidateConfirmationCodeFormat, $(e.target).val());
+    var input = $(e.target);
+    var value = input.val();
+    if (value.length === 2) {
+        value = value + '-';
+        input.val(value);
+    }
+    else if (value.substring(value.length - 2, value.length) === '--') {
+        value = value.substr(0, value.length - 1);
+        input.val(value);
+    }
+    
+    SetButtonStatus(button, ValidateConfirmationCodeFormat, value);
 }
 function TicketSearch_Retrieve_ClickHandler(e)
 {
-    //TODO: Loading animation?
-    $('#page-ticket-search .message').html('Searching...');
     var receiptId = $('#page-ticket-search .receipt-input').val();
-    data.getReceiptById(receiptId, function(receiptStore) {
-        if (receiptStore) {
-            TicketSearch_Results(receiptStore);
-        }
-        else {
-            $('#page-ticket-search .message').html('Invalid receipt ID');
-        }
-    });
+    TicketSearch_Process(receiptId);
 }
 function TicketSearch_Swiped(e, card) 
 {
-    swiper.scanning = false;
-    //TODO: Loading animation?
-    $('#page-ticket-search .message').html('Searching...');
-    data.getReceiptByCard(card, function(receiptStore) {
-        if (receiptStore) {
-            TicketSearch_Results(receiptStore);
-        }
-        else {
-            $('#page-ticket-search .message').html('Invalid card, please try again');
-            swiper.scanning = true;
-        }
-    });
+    TicketSearch_Process(card);
+}
+function TicketSearch_Process(cardOrId) {
+    slider.navigateTo('#page-processing', slider.Direction.RIGHT);
+    if (typeof cardOrId === 'string') {
+        data.getReceiptById(cardOrId, function(receiptStore) {
+            if (receiptStore) {
+                TicketSearch_Results(receiptStore);
+            }
+            else {
+                slider.navigateTo('#page-ticket-search', slider.Direction.LEFT);
+                TicketSearch_Message('Invalid receipt ID');
+            }
+        });
+    }
+    else {
+        swiper.scanning = false;
+        data.getReceiptByCard(cardOrId, function(receiptStore) {
+            if (receiptStore) {
+                TicketSearch_Results(receiptStore);
+            }
+            else {
+                slider.navigateTo('#page-ticket-search', slider.Direction.LEFT);
+                TicketSearch_Message('Invalid card, please try again');
+                swiper.scanning = true;
+            }
+        });
+    }
 }
 function TicketSearch_Results(receiptStore) 
 {
@@ -598,7 +624,16 @@ function TicketSearch_Results(receiptStore)
                 price: receiptStore.stubs[i].price
             });
         }
-        slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT, Prerequisite_Print_Tickets);
+        Prerequisite_Print_Tickets();
+        slider.navigateTo('#page-print-tickets', slider.Direction.RIGHT);
+    }
+}
+function TicketSearch_Message(message) {
+    if (message) {
+        $('#page-ticket-search .message').html(message).show(100);
+    }
+    else {
+        $('#page-ticket-search .message').html('').hide(100);
     }
 }
 function PrintTickets_PrintTickets_ClickHandler(e)

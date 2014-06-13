@@ -100,10 +100,10 @@ button:active {
 }
 button:disabled {
     background-image: none;
-    background-color: #333;
-    border-color: #2e2e2e;
-    text-shadow: 2px 1px #2e2e2e; 
-    color: #444;
+    background-color: #444;
+    border-color: #333;
+    text-shadow: 2px 1px #222; 
+    color: #555;
 }
 button:focus {
     outline: 0;
@@ -718,8 +718,15 @@ button:focus {
     display: none;
     font-size: 1.3em;
 }
-#page-ticket-search .message {
-    margin-top: 1em;
+#page-ticket-search .message
+{
+    background-color: rgb(196, 37, 37);
+    display: block;
+    padding: .3em 1.5em;
+    border: solid 1px red;
+    color: #fff;
+    font-size: 1.2em;
+    margin-bottom: 1em;
 }
 
 /*******************************************************************************

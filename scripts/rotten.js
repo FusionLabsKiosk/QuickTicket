@@ -68,8 +68,17 @@ rotten.parseMovieData = function(movies) {
 rotten.getMoviePoster = function(url, movie) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'blob';
-    xhr.onload = function() {
-        movie.posterUrl = window.URL.createObjectURL(xhr.response);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                movie.posterUrl = window.URL.createObjectURL(xhr.response);
+                $('.movies-carousel .movie[data-id="' + movie.id + '"] .movie-poster').attr('src', movie.posterUrl);
+            }
+            else {
+                console.log('Could not retrieve poster: ' + xhr.responseText);
+                //TODO: 404 Not Found Movie Poster
+            }
+        } 
     };
     xhr.open('GET', url, true);
     xhr.send();

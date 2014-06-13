@@ -12,15 +12,18 @@ data.theaters = [];
 data.movies = [];
 data.showings = [];
 
-data.initializeData = function() {
+data.initializeData = function(callback) {
     $.getJSON('scripts/data.json', data.initializeDataJson);
     rotten.getInTheatersData(function() {
-        data.generateShowtimes();
+        data.generateShowtimes(callback);
     });
     spreadsheet.defaultSpreadsheetId = data.SPREADSHEET_ID;
 };
 
-data.generateShowtimes = function() {
+data.generateShowtimes = function(callback) {
+    //We are dynamically generating showtimes, but this is where you would 
+    //call a showtime API service such as Fandango to pull in showtime data 
+    //for each movie
     data.showings = [];
     var now = new Date();
     var date = data.MONTHS[now.getMonth()] + ' ' + now.getDate();
@@ -53,11 +56,13 @@ data.generateShowtimes = function() {
             }
         }
     }
+    callback();
 };
 
-
-
 data.initializeDataJson = function(json) {
+    //For ticket information, pricings, and theaters, you would pull this from 
+    //the theater's in house API. For demo purposes, we defined this data in a 
+    //JSON file
     for (var i = 0; i < json.ticketTypes.length; i++) {
         var tt = json.ticketTypes[i];
         data.ticketTypes.push(new TicketType(tt.id, tt.name));
@@ -73,23 +78,6 @@ data.initializeDataJson = function(json) {
     for (var i = 0; i < json.theaters.length; i++) {
         var t = json.theaters[i];
         data.theaters.push(new Theater(t.id, t.name, data.getPricingByName(t.pricing)));
-    }
-    for (var i = 0; i < json.movies.length; i++) {
-        var m = json.movies[i];
-        var movie = new Movie();
-        movie.id = m.id;
-        movie.title = m.title;
-        movie.rating = m.rating;
-        movie.runtime = m.runtime;
-        movie.posterUrl = m.posterUrl;
-        movie.posterUrl = m.synopsis;
-        movie.cast = m.cast.slice();
-        movie.directors = m.directors.slice();
-        data.movies.push(movie);
-    }
-    for (var i = 0; i < json.showings.length; i++) {
-        var s = json.showings[i];
-        data.showings.push(new Showing(s.id, data.getMovieByTitle(s.movieTitle), s.date, s.time, data.getTheaterByID(s.theater)));
     }
     return;
 };

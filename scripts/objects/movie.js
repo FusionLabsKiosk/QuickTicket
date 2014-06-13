@@ -43,7 +43,7 @@ function Movie() {
      * A link to the movie poster to be used in a 'src' attribute
      * @type {string}
      */
-    this.posterUrl = '';
+    this.posterUrl = 'images/loading.gif';
     /**
      * A short synopsis of the movie's plot
      * @type {string}

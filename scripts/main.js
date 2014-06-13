@@ -18,8 +18,10 @@ function Init() {
     InitSlider();
     FormatPages();
     UpdateClock();
-    data.initializeData();
-    ReturnMainMenu_ClickHandler();
+    slider.navigateTo('#page-processing', slider.Direction.LEFT);
+    data.initializeData(function() {
+        ReturnMainMenu_ClickHandler();
+    });
 }
 function InitSlider() {
     slider.processing = '#page-processing';
